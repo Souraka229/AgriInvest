@@ -763,10 +763,13 @@
                         <h3><i class="fas fa-link"></i> Votre lien de parrainage unique</h3>
                         <p>Partagez ce lien pour inviter vos amis et gagnez <strong>28% de bonus</strong> sur leur premier investissement !</p>
                         
-                        <div class="referral-link">
-                            <input type="text" id="referralLinkInput" readonly>
-                            <button class="btn btn-small" onclick="copyReferralLink()">Copier</button>
-                        </div>
+                     <div class="referral-link">
+    <input type="text" id="referralLinkInput" readonly>
+    <button class="btn btn-small" onclick="copyReferralLink()">Copier</button>
+</div>
+
+<!-- ✅ AJOUTEZ CETTE LIGNE - Affichage du code promo -->
+<div id="referralCodeDisplay"></div>
                         
                         <div class="referral-stats">
                             <div class="referral-stat">
@@ -1499,12 +1502,22 @@
             userRef.onSnapshot((doc) => {
                 if (doc.exists) {
                     const userData = doc.data();
-                    
-                    // Générer le lien de parrainage avec le domaine réel
-                    if (userData.referralCode) {
-                        const referralLink = `${APP_DOMAIN}?ref=${userData.referralCode}`;
-                        referralLinkInput.value = referralLink;
-                    }
+                    // AJOUTEZ CES LIGNES après referralLinkInput.value = referralLink;
+if (userData.referralCode) {
+    const referralLink = `${APP_DOMAIN}?ref=${userData.referralCode}`;
+    referralLinkInput.value = referralLink;
+    
+    // ✅ AJOUTEZ CES 2 LIGNES - Afficher le code promo en dessous
+    const referralCodeDisplay = document.getElementById('referralCodeDisplay');
+    if (referralCodeDisplay) {
+        referralCodeDisplay.innerHTML = `
+            <div style="margin-top: 10px; text-align: center; padding: 10px; background: #f0f8f0; border-radius: 5px;">
+                <strong>Votre code promo :</strong> 
+                <span style="font-size: 1.2em; color: #2e7d32; font-weight: bold;">${userData.referralCode}</span>
+            </div>
+        `;
+    }
+}
                     
                     // Mettre à jour les statistiques
                     const referralCountValue = userData.referrals ? userData.referrals.length : 0;
