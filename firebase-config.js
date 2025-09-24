@@ -1,12 +1,12 @@
-// firebase-config.js - Version modulaire Firebase v12
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+// firebase-config.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword,
     signOut,
     onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
     getFirestore,
     doc,
@@ -21,9 +21,9 @@ import {
     orderBy,
     increment,
     serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Configuration Firebase
+// Remplacez par votre configuration Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyB7p0HYUDyEVE79wkdZ4VSP7Okyf9djsNI",
     authDomain: "xlab-dbe8d.firebaseapp.com",
@@ -45,14 +45,9 @@ window.firebaseApp = app;
 
 // Exporter les fonctions
 window.firebaseFunctions = {
-    // Auth
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    
-    // Firestore
     doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, orderBy, increment, serverTimestamp
 };
-
-console.log('✅ Firebase configuré avec succès!');
