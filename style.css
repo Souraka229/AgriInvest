@@ -1,205 +1,154 @@
-/* Styles généraux */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f5f5f5;
+    background-color: #f4f4f4;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* En-tête */
-header {
-    background-color: #2e7d32;
+.navbar {
+    background-color: #2c3e50;
     color: white;
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-header .container {
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header h1 {
-    font-size: 1.8rem;
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-nav ul {
-    display: flex;
-    list-style: none;
-}
-
-nav ul li {
-    margin-left: 1.5rem;
-}
-
-nav ul li a {
+.nav-links a, .nav-links button {
     color: white;
     text-decoration: none;
-    transition: opacity 0.3s;
+    margin-left: 1rem;
 }
 
-nav ul li a:hover {
-    opacity: 0.8;
-}
-
-/* Boutons */
 .btn-primary {
-    background-color: #2e7d32;
+    background-color: #27ae60;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
 }
 
 .btn-primary:hover {
-    background-color: #1b5e20;
+    background-color: #219653;
 }
 
 .btn-secondary {
-    background-color: transparent;
+    background-color: #7f8c8d;
     color: white;
-    border: 1px solid white;
+    border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
 }
 
 .btn-secondary:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: #6c7a89;
 }
 
-/* Formulaires */
-.auth-form, #withdraw-form, #invest-form {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+.auth-form {
     max-width: 400px;
     margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-.form-group input {
+.auth-form input {
     width: 100%;
     padding: 0.5rem;
+    margin: 0.5rem 0;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 1rem;
 }
 
-/* Tableau de bord */
-#dashboard, #history, #withdraw {
-    margin-top: 2rem;
+section {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 
-.financial-summary {
+.dashboard-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
     margin-bottom: 2rem;
 }
 
-.summary-card {
+.stat-card {
     background: white;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.summary-card h3 {
-    font-size: 1rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-}
-
-.summary-card p {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2e7d32;
-}
-
-/* Produits */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
 }
 
 .product-card {
     background: white;
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-.product-card h4 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: #2e7d32;
-}
-
-.product-card p {
-    margin-bottom: 1rem;
-    color: #666;
-}
-
-.product-card .invest-btn {
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
 }
 
-/* Historique */
-.history-tabs {
-    display: flex;
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.tabs {
     margin-bottom: 1rem;
-    border-bottom: 1px solid #ddd;
 }
 
 .tab-btn {
-    background: none;
+    padding: 0.5rem 1rem;
     border: none;
-    padding: 0.75rem 1.5rem;
+    background: #ddd;
     cursor: pointer;
-    font-size: 1rem;
-    border-bottom: 3px solid transparent;
 }
 
 .tab-btn.active {
-    border-bottom-color: #2e7d32;
-    color: #2e7d32;
-    font-weight: bold;
+    background: #27ae60;
+    color: white;
 }
 
 .tab-content {
@@ -216,81 +165,27 @@ table {
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-table th, table td {
-    padding: 0.75rem;
+th, td {
+    padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-table th {
-    background-color: #f5f5f5;
-    font-weight: 600;
+th {
+    background: #f4f4f4;
 }
 
-/* Modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-    header .container {
+    .nav-links {
+        display: flex;
         flex-direction: column;
-        text-align: center;
+        gap: 0.5rem;
     }
     
-    nav ul {
-        margin-top: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    nav ul li {
-        margin: 0.5rem;
-    }
-    
-    .financial-summary {
-        grid-template-columns: 1fr;
-    }
-    
-    .products-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .history-tabs {
+    .navbar {
         flex-direction: column;
-    }
-    
-    .tab-btn {
-        text-align: left;
+        gap: 1rem;
     }
 }
