@@ -1,28 +1,4 @@
-// app.js - Application AgriInvest avec Firebase v12 modulaire
-import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    createUserWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import { 
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where,
-    orderBy,
-    increment,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
-// Variables globales
+// app.js - Application AgriInvest corrigée
 let currentUser = null;
 let userData = null;
 let products = [];
@@ -34,36 +10,28 @@ const MTN_API_CONFIG = {
     callbackUrl: "https://votresite.com/callback"
 };
 
-// Attendre que Firebase soit chargé
+// Attendre que le DOM soit chargé
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initializeApp, 500);
+    console.log('🚀 Démarrage de l\'application...');
+    initializeApp();
 });
 
-async function initializeApp() {
-    try {
-        // Initialiser Firebase avec la configuration globale
-        const firebaseApp = window.firebaseApp;
-        if (!firebaseApp) {
-            throw new Error('Firebase non initialisé');
-        }
-        
-        console.log('🚀 Initialisation de l\'application AgriInvest...');
-        
-        // Configurer les écouteurs d'événements
-        setupEventListeners();
-        
-        // Observer l'état d'authentification
-        setupAuthListener();
-        
-        // Charger les produits
-        await loadProducts();
-        
-    } catch (error) {
-        console.error('❌ Erreur lors de l\'initialisation:', error);
+function initializeApp() {
+    // Vérifier que Firebase est chargé
+    if (!window.firebaseAuth) {
+        console.error('❌ Firebase non chargé');
+        setTimeout(initializeApp, 1000);
+        return;
     }
+    
+    console.log('✅ Firebase détecté, configuration des événements...');
+    setupEventListeners();
+    setupAuthListener();
 }
 
 function setupEventListeners() {
+    console.log('🔧 Configuration des écouteurs d\'événements...');
+    
     // Navigation
     document.getElementById('dashboard-link').addEventListener('click', showDashboard);
     document.getElementById('invest-link').addEventListener('click', showInvest);
@@ -81,16 +49,8 @@ function setupEventListeners() {
     document.getElementById('login-form-submit').addEventListener('submit', handleLogin);
     document.getElementById('signup-form-submit').addEventListener('submit', handleSignup);
     document.getElementById('withdraw-form').addEventListener('submit', handleWithdraw);
-    document.getElementById('invest-form').addEventListener('submit', handleInvestment);
     
-    // Onglets historique
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            switchTab(this.dataset.tab);
-        });
-    });
-    
-    // Modal
+    // Modal d'investissement
     document.querySelector('.close').addEventListener('click', closeModal);
     document.getElementById('invest-quantity').addEventListener('input', updateInvestTotal);
     
@@ -101,65 +61,98 @@ function setupEventListeners() {
             closeModal();
         }
     });
+    
+    // Onglets historique
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            switchTab(this.dataset.tab);
+        });
+    });
+    
+    console.log('✅ Écouteurs d\'événements configurés');
 }
 
 function setupAuthListener() {
-    const { onAuthStateChanged, auth } = window.firebaseApp;
+    const { onAuthStateChanged } = window.firebaseFunctions;
+    const auth = window.firebaseAuth;
     
     onAuthStateChanged(auth, async (user) => {
+        console.log('🔐 État auth changé:', user ? 'connecté' : 'déconnecté');
+        
         if (user) {
-            // Utilisateur connecté
             currentUser = user;
-            document.getElementById('user-email').textContent = user.email;
-            document.getElementById('user-info').style.display = 'inline';
-            document.getElementById('login-btn').style.display = 'none';
-            document.getElementById('signup-btn').style.display = 'none';
-            document.getElementById('auth-forms').style.display = 'none';
-            
+            showUserInterface(true);
             await loadUserData();
             await loadProducts();
             showDashboard();
         } else {
-            // Utilisateur déconnecté
             currentUser = null;
             userData = null;
-            document.getElementById('user-info').style.display = 'none';
-            document.getElementById('login-btn').style.display = 'inline';
-            document.getElementById('signup-btn').style.display = 'inline';
-            document.getElementById('auth-forms').style.display = 'block';
+            showUserInterface(false);
             showLoginForm();
-            
-            hideAllSections();
         }
     });
 }
 
-// FONCTIONS D'AUTHENTIFICATION
+function showUserInterface(isLoggedIn) {
+    if (isLoggedIn) {
+        document.getElementById('user-email').textContent = currentUser.email;
+        document.getElementById('user-info').style.display = 'inline';
+        document.getElementById('login-btn').style.display = 'none';
+        document.getElementById('signup-btn').style.display = 'none';
+        document.getElementById('auth-forms').style.display = 'none';
+        
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('history').style.display = 'none';
+        document.getElementById('withdraw').style.display = 'none';
+    } else {
+        document.getElementById('user-info').style.display = 'none';
+        document.getElementById('login-btn').style.display = 'inline';
+        document.getElementById('signup-btn').style.display = 'inline';
+        document.getElementById('auth-forms').style.display = 'block';
+        
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('history').style.display = 'none';
+        document.getElementById('withdraw').style.display = 'none';
+    }
+}
+
+// AUTHENTIFICATION
 async function handleLogin(e) {
     e.preventDefault();
+    console.log('🔐 Tentative de connexion...');
     
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
-    const { signInWithEmailAndPassword, auth } = window.firebaseApp;
+    const { signInWithEmailAndPassword } = window.firebaseFunctions;
+    const auth = window.firebaseAuth;
     
     try {
         await signInWithEmailAndPassword(auth, email, password);
+        console.log('✅ Connexion réussie');
     } catch (error) {
+        console.error('❌ Erreur connexion:', error);
         alert('Erreur de connexion: ' + error.message);
     }
 }
 
 async function handleSignup(e) {
     e.preventDefault();
+    console.log('👤 Tentative d\'inscription...');
     
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
     const referralCode = document.getElementById('referral-code').value;
-    const { createUserWithEmailAndPassword, auth, db, doc, setDoc, serverTimestamp } = window.firebaseApp;
+    
+    const { createUserWithEmailAndPassword, doc, setDoc, serverTimestamp } = window.firebaseFunctions;
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDb;
     
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
+        
+        console.log('✅ Utilisateur créé, sauvegarde des données...');
         
         // Créer le document utilisateur
         await setDoc(doc(db, 'users', user.uid), {
@@ -174,7 +167,8 @@ async function handleSignup(e) {
             parrain: referralCode || null
         });
         
-        // Appliquer le bonus de parrainage si code fourni
+        console.log('✅ Données utilisateur sauvegardées');
+        
         if (referralCode) {
             await applyReferralBonus(referralCode, user.uid);
         }
@@ -182,61 +176,77 @@ async function handleSignup(e) {
         alert('Compte créé avec succès!');
         
     } catch (error) {
+        console.error('❌ Erreur inscription:', error);
         alert('Erreur d\'inscription: ' + error.message);
     }
 }
 
 async function handleLogout() {
-    const { signOut, auth } = window.firebaseApp;
+    const { signOut } = window.firebaseFunctions;
+    const auth = window.firebaseAuth;
     
     try {
         await signOut(auth);
+        console.log('✅ Déconnexion réussie');
     } catch (error) {
+        console.error('❌ Erreur déconnexion:', error);
         alert('Erreur de déconnexion: ' + error.message);
     }
 }
 
-// FONCTIONS DE GESTION DES DONNÉES
+// GESTION DES DONNÉES
 async function loadUserData() {
     if (!currentUser) return;
     
-    const { db, doc, getDoc } = window.firebaseApp;
+    console.log('📊 Chargement des données utilisateur...');
+    const { doc, getDoc } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     try {
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
             userData = userDoc.data();
+            console.log('✅ Données utilisateur chargées:', userData);
             updateDashboard();
+        } else {
+            console.error('❌ Document utilisateur non trouvé');
         }
     } catch (error) {
-        console.error('Erreur chargement données utilisateur:', error);
+        console.error('❌ Erreur chargement données:', error);
     }
 }
 
 async function loadProducts() {
-    const { db, collection, getDocs } = window.firebaseApp;
+    console.log('📦 Chargement des produits...');
+    const { collection, getDocs, addDoc, serverTimestamp } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     try {
         const querySnapshot = await getDocs(collection(db, 'produits'));
         products = [];
+        
         querySnapshot.forEach((doc) => {
             products.push({ id: doc.id, ...doc.data() });
         });
         
+        console.log(`✅ ${products.length} produits chargés`);
+        
         // Si aucun produit, créer les produits par défaut
         if (products.length === 0) {
-            await initializeDefaultProducts();
-            await loadProducts(); // Recharger après création
+            console.log('🆕 Création des produits par défaut...');
+            await createDefaultProducts();
+            await loadProducts(); // Recharger les produits
         } else {
             displayProducts();
         }
     } catch (error) {
-        console.error('Erreur chargement produits:', error);
+        console.error('❌ Erreur chargement produits:', error);
     }
 }
 
-async function initializeDefaultProducts() {
-    const { db, collection, addDoc, serverTimestamp } = window.firebaseApp;
+async function createDefaultProducts() {
+    const { collection, addDoc, serverTimestamp } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     const defaultProducts = [
         {
@@ -262,6 +272,14 @@ async function initializeDefaultProducts() {
             limiteReinvestissement: 12,
             capitalInvesti: 0,
             createdAt: serverTimestamp()
+        },
+        {
+            nom: "Cacao",
+            description: "Investissement premium dans la culture du cacao",
+            prix: 20000,
+            limiteReinvestissement: 5,
+            capitalInvesti: 0,
+            createdAt: serverTimestamp()
         }
     ];
     
@@ -272,37 +290,42 @@ async function initializeDefaultProducts() {
     console.log('✅ Produits par défaut créés');
 }
 
-// FONCTIONS D'AFFICHAGE
+// AFFICHAGE
 function showDashboard() {
     hideAllSections();
     document.getElementById('dashboard').style.display = 'block';
-    if (currentUser) updateDashboard();
+    console.log('📊 Affichage du tableau de bord');
 }
 
 function showInvest() {
     hideAllSections();
     document.getElementById('dashboard').style.display = 'block';
+    console.log('💼 Affichage section investissement');
 }
 
 function showHistory() {
     hideAllSections();
     document.getElementById('history').style.display = 'block';
-    if (currentUser) loadTransactionHistory();
+    loadTransactionHistory();
+    console.log('📈 Affichage historique');
 }
 
 function showWithdraw() {
     hideAllSections();
     document.getElementById('withdraw').style.display = 'block';
+    console.log('💰 Affichage section retrait');
 }
 
 function showLoginForm() {
     document.getElementById('signup-form').style.display = 'none';
     document.getElementById('login-form').style.display = 'block';
+    console.log('🔐 Affichage formulaire connexion');
 }
 
 function showSignupForm() {
     document.getElementById('login-form').style.display = 'none';
     document.getElementById('signup-form').style.display = 'block';
+    console.log('👤 Affichage formulaire inscription');
 }
 
 function hideAllSections() {
@@ -317,19 +340,28 @@ function switchTab(tabName) {
     
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
     document.getElementById(`${tabName}-tab`).classList.add('active');
+    console.log(`📁 Onglet changé: ${tabName}`);
 }
 
 function updateDashboard() {
     if (!userData) return;
     
-    document.getElementById('total-invested').textContent = formatCurrency(userData.capitalInvesti || 0);
-    document.getElementById('daily-income').textContent = formatCurrency(calculateDailyIncome());
-    document.getElementById('total-bonus').textContent = formatCurrency((userData.bonusBienvenue || 0) + (userData.bonusParrainage || 0));
-    document.getElementById('available-balance').textContent = formatCurrency(calculateAvailableBalance());
+    document.getElementById('total-invested').textContent = formatCurrency(userData.capitalInvesti || 0) + ' FCFA';
+    document.getElementById('daily-income').textContent = formatCurrency(calculateDailyIncome()) + ' FCFA';
+    document.getElementById('total-bonus').textContent = formatCurrency((userData.bonusBienvenue || 0) + (userData.bonusParrainage || 0)) + ' FCFA';
+    document.getElementById('available-balance').textContent = formatCurrency(calculateAvailableBalance()) + ' FCFA';
+    
+    console.log('📊 Tableau de bord mis à jour');
 }
 
 function displayProducts() {
     const productsList = document.getElementById('products-list');
+    
+    if (products.length === 0) {
+        productsList.innerHTML = '<p>Aucun produit disponible pour le moment.</p>';
+        return;
+    }
+    
     productsList.innerHTML = '';
     
     products.forEach(product => {
@@ -338,44 +370,59 @@ function displayProducts() {
         productCard.innerHTML = `
             <h4>${product.nom}</h4>
             <p>${product.description || 'Investissement agricole rentable'}</p>
-            <p>Prix: ${formatCurrency(product.prix)} FCFA</p>
-            <p>Limite: ${product.limiteReinvestissement} investissements</p>
-            <p>Capital investi: ${formatCurrency(product.capitalInvesti || 0)} FCFA</p>
-            <button class="btn-primary invest-btn" data-product-id="${product.id}">Investir</button>
+            <p><strong>Prix:</strong> ${formatCurrency(product.prix)} FCFA</p>
+            <p><strong>Limite:</strong> ${product.limiteReinvestissement} investissements</p>
+            <p><strong>Capital investi:</strong> ${formatCurrency(product.capitalInvesti || 0)} FCFA</p>
+            <button class="btn-primary invest-btn" data-product-id="${product.id}">
+                Investir maintenant
+            </button>
         `;
         productsList.appendChild(productCard);
     });
     
+    // Ajouter les écouteurs d'événements pour les boutons d'investissement
     document.querySelectorAll('.invest-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            openInvestModal(this.dataset.productId);
+            const productId = this.getAttribute('data-product-id');
+            console.log('🔄 Ouverture modal pour produit:', productId);
+            openInvestModal(productId);
         });
     });
+    
+    console.log(`✅ ${products.length} produits affichés`);
 }
 
-// FONCTIONS D'INVESTISSEMENT
+// INVESTISSEMENT
 function openInvestModal(productId) {
     const product = products.find(p => p.id === productId);
-    if (!product) return;
+    if (!product) {
+        console.error('❌ Produit non trouvé:', productId);
+        return;
+    }
+    
+    console.log('📦 Ouverture modal pour:', product.nom);
     
     document.getElementById('modal-product-name').textContent = product.nom;
     document.getElementById('modal-product-price').textContent = formatCurrency(product.prix);
     document.getElementById('modal-product-limit').textContent = product.limiteReinvestissement;
     document.getElementById('invest-quantity').value = 1;
     document.getElementById('invest-quantity').max = product.limiteReinvestissement;
-    updateInvestTotal();
     
-    document.getElementById('invest-form').dataset.productId = productId;
+    // Stocker l'ID du produit dans le formulaire
+    document.getElementById('invest-form').setAttribute('data-product-id', productId);
+    
+    updateInvestTotal();
     document.getElementById('invest-modal').style.display = 'flex';
 }
 
 function closeModal() {
     document.getElementById('invest-modal').style.display = 'none';
+    console.log('❌ Modal fermé');
 }
 
 function updateInvestTotal() {
     const quantity = parseInt(document.getElementById('invest-quantity').value) || 0;
-    const productId = document.getElementById('invest-form').dataset.productId;
+    const productId = document.getElementById('invest-form').getAttribute('data-product-id');
     const product = products.find(p => p.id === productId);
     
     if (product) {
@@ -384,19 +431,34 @@ function updateInvestTotal() {
     }
 }
 
-async function handleInvestment(e) {
+// Gérer le formulaire d'investissement
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'invest-form') {
+        e.preventDefault();
+    }
+});
+
+// Créer l'écouteur pour le formulaire d'investissement
+document.getElementById('invest-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+    console.log('💳 Soumission formulaire d\'investissement...');
     
-    const productId = this.dataset.productId;
+    const productId = this.getAttribute('data-product-id');
     const quantity = parseInt(document.getElementById('invest-quantity').value);
     const phoneNumber = document.getElementById('invest-phone').value;
     
     const product = products.find(p => p.id === productId);
-    if (!product) return;
+    if (!product) {
+        alert('Produit non trouvé!');
+        return;
+    }
     
     const amount = quantity * product.prix;
     
+    console.log(`📊 Détails investissement: ${quantity} x ${product.nom} = ${amount} FCFA`);
+    
     try {
+        // Simuler le paiement MTN
         const paymentSuccess = await processMTNPayment(phoneNumber, amount);
         
         if (paymentSuccess) {
@@ -404,26 +466,34 @@ async function handleInvestment(e) {
             closeModal();
             await loadUserData();
             await loadProducts();
-            alert('Investissement réalisé avec succès!');
+            alert('✅ Investissement réalisé avec succès!');
         } else {
-            alert('Échec du paiement. Veuillez réessayer.');
+            alert('❌ Échec du paiement. Veuillez réessayer.');
         }
     } catch (error) {
+        console.error('❌ Erreur investissement:', error);
         alert('Erreur lors de l\'investissement: ' + error.message);
     }
-}
+});
 
 async function processMTNPayment(phoneNumber, amount) {
-    // Simulation de paiement MTN
+    console.log(`📱 Simulation paiement MTN: ${amount}FCFA vers ${phoneNumber}`);
+    
     return new Promise((resolve) => {
-        setTimeout(() => resolve(true), 2000);
+        setTimeout(() => {
+            // Pour l'instant, on simule un paiement réussi
+            console.log('✅ Paiement simulé réussi');
+            resolve(true);
+        }, 2000);
     });
 }
 
 async function updateInvestment(productId, quantity, amount) {
     if (!currentUser) return;
     
-    const { db, doc, updateDoc, collection, addDoc, increment, serverTimestamp } = window.firebaseApp;
+    console.log('💾 Mise à jour de l\'investissement...');
+    const { doc, updateDoc, collection, addDoc, increment, serverTimestamp } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     try {
         // Mettre à jour le capital de l'utilisateur
@@ -452,16 +522,20 @@ async function updateInvestment(productId, quantity, amount) {
             await updateDoc(doc(db, 'users', currentUser.uid), {
                 bonusBienvenue: welcomeBonus
             });
+            console.log('🎁 Bonus de bienvenue appliqué:', welcomeBonus);
         }
         
+        console.log('✅ Investissement sauvegardé');
     } catch (error) {
+        console.error('❌ Erreur sauvegarde investissement:', error);
         throw error;
     }
 }
 
-// FONCTIONS DE RETRAIT
+// RETRAITS
 async function handleWithdraw(e) {
     e.preventDefault();
+    console.log('💰 Demande de retrait...');
     
     const amount = parseInt(document.getElementById('withdraw-amount').value);
     const phoneNumber = document.getElementById('withdraw-number').value;
@@ -477,8 +551,10 @@ async function handleWithdraw(e) {
         return;
     }
     
-    const { db, collection, addDoc, doc, updateDoc, increment, serverTimestamp } = window.firebaseApp;
+    const { collection, addDoc, doc, updateDoc, increment, serverTimestamp } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
+      
     try {
         await addDoc(collection(db, 'retraits'), {
             userId: currentUser.uid,
@@ -493,19 +569,22 @@ async function handleWithdraw(e) {
         });
         
         document.getElementById('withdraw-form').reset();
-        alert('Demande de retrait envoyée!');
+        alert('✅ Demande de retrait envoyée! Elle sera traitée manuellement.');
         await loadUserData();
         
     } catch (error) {
+        console.error('❌ Erreur retrait:', error);
         alert('Erreur lors de la demande de retrait: ' + error.message);
     }
 }
 
-// HISTORIQUE DES TRANSACTIONS
+// HISTORIQUE
 async function loadTransactionHistory() {
     if (!currentUser) return;
     
-    const { db, collection, getDocs, query, where, orderBy } = window.firebaseApp;
+    console.log('📈 Chargement historique...');
+    const { collection, getDocs, query, where, orderBy } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     try {
         // Dépôts
@@ -554,8 +633,9 @@ async function loadTransactionHistory() {
             withdrawalsList.appendChild(row);
         });
         
+        console.log('✅ Historique chargé');
     } catch (error) {
-        console.error('Erreur chargement historique:', error);
+        console.error('❌ Erreur chargement historique:', error);
     }
 }
 
@@ -576,8 +656,12 @@ function formatCurrency(amount) {
 
 function formatDate(timestamp) {
     if (!timestamp) return 'N/A';
-    const date = timestamp.toDate();
-    return date.toLocaleDateString('fr-FR');
+    try {
+        const date = timestamp.toDate();
+        return date.toLocaleDateString('fr-FR');
+    } catch (error) {
+        return 'Date invalide';
+    }
 }
 
 function getProductName(productId) {
@@ -590,7 +674,8 @@ function generateReferralCode() {
 }
 
 async function applyReferralBonus(referralCode, newUserId) {
-    const { db, collection, getDocs, where, doc, updateDoc, increment } = window.firebaseApp;
+    const { collection, getDocs, query, where, doc, updateDoc } = window.firebaseFunctions;
+    const db = window.firebaseDb;
     
     try {
         const sponsorQuery = query(
@@ -605,13 +690,14 @@ async function applyReferralBonus(referralCode, newUserId) {
             await updateDoc(doc(db, 'users', newUserId), {
                 parrain: sponsorDoc.id
             });
+            console.log('✅ Bonus parrainage appliqué');
         }
     } catch (error) {
-        console.error('Erreur bonus parrainage:', error);
+        console.error('❌ Erreur bonus parrainage:', error);
     }
 }
 
-// Initialisation manuelle des produits
-window.initializeProducts = initializeDefaultProducts;
+// Fonction pour initialiser manuellement les produits
+window.initializeAppProducts = createDefaultProducts;
 
-console.log('✅ Application AgriInvest chargée!');
+console.log('✅ Application AgriInvest prête!');
