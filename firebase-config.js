@@ -38,37 +38,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Exporter les fonctions Firebase pour une utilisation globale
-window.firebaseApp = {
-    // Auth functions
-    auth,
+// Exporter pour utilisation globale
+window.firebaseAuth = auth;
+window.firebaseDb = db;
+window.firebaseApp = app;
+
+// Exporter les fonctions
+window.firebaseFunctions = {
+    // Auth
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
     
-    // Firestore functions
-    db,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where,
-    orderBy,
-    increment,
-    serverTimestamp,
-    
-    // Helper functions
-    firestore: {
-        FieldValue: {
-            increment: increment,
-            serverTimestamp: serverTimestamp
-        }
-    }
+    // Firestore
+    doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, orderBy, increment, serverTimestamp
 };
 
 console.log('✅ Firebase configuré avec succès!');
