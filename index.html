@@ -1,58 +1,74 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriInvest - Investissement Agricole Intelligent</title>
-    <meta name="description" content="Investissez dans l'agriculture africaine et générez des revenus quotidiens. Programme de parrainage avec bonus attractifs.">
+    <title>AgriInvest 🌱 | Investissement Agricole Intelligent</title>
+    <meta name="description" content="Investissez dans l'agriculture africaine avec des rendements quotidiens de 10%. Programme de parrainage premium avec bonus attractifs.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
-            --primary: #2e7d32;
-            --primary-dark: #1b5e20;
-            --secondary: #ff9800;
-            --light: #f5f5f5;
-            --dark: #333;
-            --gray: #757575;
-            --success: #4caf50;
-            --warning: #ffc107;
-            --danger: #f44336;
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --radius: 8px;
+            --primary: #00C853;
+            --primary-dark: #009624;
+            --primary-light: #5EFC82;
+            --secondary: #FF6D00;
+            --secondary-dark: #E65100;
+            --accent: #2962FF;
+            --dark: #1A237E;
+            --light: #F5F9FF;
+            --gray: #78909C;
+            --success: #00E676;
+            --warning: #FF9100;
+            --danger: #FF1744;
+            --shadow: 0 10px 30px rgba(0, 200, 83, 0.15);
+            --shadow-hover: 0 20px 50px rgba(0, 200, 83, 0.25);
+            --radius: 16px;
+            --gradient: linear-gradient(135deg, #00C853 0%, #2962FF 100%);
+            --gradient-secondary: linear-gradient(135deg, #FF6D00 0%, #FFAB00 100%);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
 
         body {
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, #F5F9FF 0%, #E3F2FD 100%);
             color: var(--dark);
-            line-height: 1.6;
+            line-height: 1.7;
+            min-height: 100vh;
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 20px;
         }
 
-        /* Header */
+        /* 🌟 HEADER PREMIUM */
         header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem 0;
-            box-shadow: var(--shadow);
-            position: sticky;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 200, 83, 0.1);
+            padding: 1.2rem 0;
+            position: fixed;
             top: 0;
-            z-index: 100;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
         }
 
         .header-content {
@@ -62,223 +78,414 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
             display: flex;
             align-items: center;
+            gap: 12px;
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .logo i {
-            margin-right: 10px;
+        .logo-icon {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         nav ul {
             display: flex;
             list-style: none;
-        }
-
-        nav ul li {
-            margin-left: 20px;
+            gap: 2rem;
         }
 
         nav ul li a {
-            color: white;
+            color: var(--dark);
             text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.3s;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-
-        nav ul li a:hover, nav ul li a.active {
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .auth-buttons button {
-            background-color: white;
-            color: var(--primary);
-            border: none;
-            padding: 8px 15px;
-            border-radius: var(--radius);
             font-weight: 600;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: all 0.3s;
+            padding: 10px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .auth-buttons button:hover {
-            background-color: #e0e0e0;
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        nav ul li a:hover::before,
+        nav ul li a.active::before {
+            left: 0;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: white;
             transform: translateY(-2px);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 109, 0, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 1.5rem;
         }
 
-        .user-info span {
-            margin-right: 15px;
-        }
-
-        .user-info button {
-            background-color: var(--secondary);
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
         }
 
-        /* Hero Section */
+        /* 🚀 HERO SECTION ÉPIC */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80');
+            background: linear-gradient(135deg, rgba(0, 200, 83, 0.9) 0%, rgba(41, 98, 255, 0.9) 100%), 
+                        url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             color: white;
-            padding: 5rem 0;
+            padding: 180px 0 120px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,0 1000,50 1000,100 0,100"/></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 2.8rem;
+            font-size: 4rem;
+            font-weight: 800;
             margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            line-height: 1.1;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
         }
 
         .hero p {
-            font-size: 1.3rem;
-            max-width: 800px;
-            margin: 0 auto 2.5rem;
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            font-weight: 300;
         }
 
-        /* Buttons */
-        .btn {
-            display: inline-block;
-            background-color: var(--secondary);
-            color: white;
-            padding: 14px 30px;
-            border-radius: var(--radius);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--shadow);
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
         }
 
-        .btn:hover {
-            background-color: #e68900;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        .hero-stat {
+            text-align: center;
         }
 
-        .btn-primary {
-            background-color: var(--primary);
+        .hero-stat .number {
+            font-size: 3rem;
+            font-weight: 800;
+            display: block;
+            background: linear-gradient(45deg, #FFD600, #FF6D00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-        }
-
-        /* Sections */
+        /* 📊 SECTIONS PREMIUM */
         section {
-            padding: 4rem 0;
+            padding: 100px 0;
             display: none;
         }
 
         .active-section {
             display: block;
-            animation: fadeIn 0.5s ease-in;
+            animation: slideUp 0.8s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
 
         .section-title {
             text-align: center;
-            margin-bottom: 3rem;
-            color: var(--primary);
-            font-size: 2.2rem;
+            margin-bottom: 4rem;
+            position: relative;
         }
 
-        /* Products Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .product-card {
-            background-color: white;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .product-image {
-            height: 200px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .product-info {
-            padding: 1.8rem;
-        }
-
-        .product-info h3 {
-            margin-bottom: 0.8rem;
-            color: var(--primary);
-            font-size: 1.4rem;
-        }
-
-        .product-price {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: var(--secondary);
+        .section-title h2 {
+            font-size: 3.2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 1rem;
         }
 
-        .product-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-            color: var(--gray);
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
+            display: block;
+            margin: 0 auto;
+            border-radius: 2px;
         }
 
-        /* Dashboard */
-        .dashboard {
-            background-color: white;
+        /* 🌾 PRODUITS PREMIUM */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .product-card {
+            background: white;
             border-radius: var(--radius);
-            padding: 2.5rem;
+            overflow: hidden;
             box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            position: relative;
+            border: 1px solid rgba(0, 200, 83, 0.1);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-secondary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .product-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 2rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .product-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .product-features {
+            list-style: none;
             margin-bottom: 2rem;
+        }
+
+        .product-features li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-features li:last-child {
+            border-bottom: none;
+        }
+
+        .product-features li i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* 💰 DASHBOARD ULTRA MODERNE */
+        .dashboard {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-header {
+            background: var(--gradient);
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .dashboard-header h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 3rem;
         }
 
         .stat-card {
-            background-color: #f5f5f5;
-            padding: 1.8rem;
+            background: var(--light);
+            padding: 2.5rem 2rem;
             border-radius: var(--radius);
             text-align: center;
-            transition: transform 0.3s;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s ease;
         }
 
         .stat-card:hover {
@@ -286,87 +493,99 @@
         }
 
         .stat-card i {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-value {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin: 0.8rem 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 1rem 0;
         }
 
-        /* Referral Section */
+        /* 🤝 SECTION PARRAINAGE ELITE */
         .referral-section {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            background: linear-gradient(135deg, #E8F5E9 0%, #E1F5FE 100%);
+            padding: 3rem;
+            border-radius: var(--radius);
+            margin: 3rem 0;
+            border: 2px dashed var(--primary);
+            position: relative;
+        }
+
+        .referral-section::before {
+            content: '🌟';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+        }
+
+        .referral-link-container {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .referral-link-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            background: white;
+        }
+
+        .referral-code-display {
+            background: var(--gradient);
+            color: white;
             padding: 2rem;
             border-radius: var(--radius);
-            margin: 2.5rem 0;
-            border-left: 5px solid var(--primary);
+            text-align: center;
+            margin: 2rem 0;
         }
 
-        .referral-link {
-            display: flex;
-            gap: 10px;
-            margin: 1.5rem 0;
-        }
-
-        .referral-link input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: var(--radius);
-            font-size: 1rem;
+        .referral-code-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin: 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
         .referral-stats {
-            display: flex;
-            gap: 25px;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
         .referral-stat {
             text-align: center;
-            flex: 1;
-            min-width: 150px;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
         }
 
         .referral-stat .number {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 2.2rem;
+            font-weight: 800;
             color: var(--primary);
+            display: block;
         }
 
-        /* Tables */
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1.5rem;
-            box-shadow: var(--shadow);
-            border-radius: var(--radius);
-            overflow: hidden;
-        }
-
-        .history-table th, .history-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .history-table th {
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-        }
-
-        .history-table tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        /* Modals */
+        /* 🎯 MODALS ULTRA MODERNES */
         .modal {
             display: none;
             position: fixed;
@@ -374,536 +593,351 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
-            background-color: white;
-            padding: 2.5rem;
+            background: white;
+            padding: 3rem;
             border-radius: var(--radius);
             width: 90%;
             max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: slideUp 0.4s ease-out;
+            box-shadow: var(--shadow-hover);
+            animation: modalSlide 0.4s ease-out;
+            position: relative;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes modalSlide {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .modal h2 {
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-            text-align: center;
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
         }
 
         .form-group {
-            margin-bottom: 1.8rem;
+            margin-bottom: 2rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.8rem;
-            font-weight: 500;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: border 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 2rem;
-        }
-
-        .btn-cancel {
-            background-color: #ccc;
+            font-weight: 600;
             color: var(--dark);
         }
 
-        .btn-cancel:hover {
-            background-color: #b3b3b3;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--dark);
-            color: white;
-            padding: 3rem 0 1.5rem;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 25px;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary);
-        }
-
-        .copyright {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: #ccc;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 15px;
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #E0E0E0;
             border-radius: var(--radius);
-            margin-bottom: 1.5rem;
-            animation: slideIn 0.3s ease-out;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1);
+            outline: none;
         }
 
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .demo-note {
-            background-color: #e3f2fd;
-            padding: 15px;
-            border-radius: var(--radius);
-            margin: 20px 0;
-            text-align: center;
-            border-left: 4px solid #2196f3;
-        }
-
-        /* Responsive */
+        /* 📱 RESPONSIVE DESIGN */
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
-                text-align: center;
+                gap: 1rem;
             }
 
             nav ul {
-                margin-top: 1rem;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            nav ul li {
-                margin: 5px;
-            }
-
-            .auth-buttons {
-                margin-top: 1rem;
+                gap: 1rem;
             }
 
             .hero h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
 
             .hero p {
                 font-size: 1.1rem;
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
             .products-grid {
                 grid-template-columns: 1fr;
             }
 
-            .user-info {
-                flex-direction: column;
-                gap: 10px;
+            .stats-grid {
+                grid-template-columns: 1fr;
+                padding: 2rem;
             }
 
-            .referral-stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .referral-link {
+            .referral-link-container {
                 flex-direction: column;
             }
-
-            .modal-content {
-                padding: 1.5rem;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-            }
         }
 
-        /* Loading Spinner */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        /* ✨ ANIMATIONS SUPPLEMENTAIRES */
+        .pulse {
+            animation: pulse 2s infinite;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        /* Progress Bar */
-        .progress-bar {
-            height: 6px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 10px 0;
+        .floating {
+            animation: floating 3s ease-in-out infinite;
         }
 
-        .progress {
-            height: 100%;
-            background-color: var(--primary);
-            width: 0%;
-            transition: width 0.3s;
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
+    <!-- 🌟 HEADER ÉLITE -->
+    <header id="mainHeader">
         <div class="container header-content">
             <div class="logo">
-                <i class="fas fa-seedling"></i>
+                <i class="fas fa-seedling logo-icon"></i>
                 <span>AgriInvest</span>
             </div>
+            
             <nav>
                 <ul>
                     <li><a onclick="showSection('home')" class="active">Accueil</a></li>
-                    <li><a onclick="showSection('products')">Produits</a></li>
-                    <li><a onclick="showSection('dashboard')">Tableau de bord</a></li>
+                    <li><a onclick="showSection('products')">Investissements</a></li>
+                    <li><a onclick="showSection('dashboard')">Tableau de Bord</a></li>
                     <li><a onclick="showSection('referral')">Parrainage</a></li>
                 </ul>
             </nav>
+            
             <div class="auth-buttons" id="authButtons">
-                <button onclick="showAuthModal('login')">Connexion</button>
-                <button onclick="showAuthModal('register')" class="btn-primary">Inscription</button>
+                <button class="btn btn-outline" onclick="showAuthModal('login')">Connexion</button>
+                <button class="btn btn-primary" onclick="showAuthModal('register')">Inscription</button>
             </div>
+            
             <div class="user-info" id="userInfo" style="display: none;">
+                <div class="user-avatar" id="userAvatar">U</div>
                 <span id="userEmail"></span>
-                <button onclick="showSection('referral')" class="btn btn-small">Mon lien</button>
-                <button onclick="logout()" class="btn">Déconnexion</button>
+                <button class="btn btn-secondary" onclick="showSection('referral')">
+                    <i class="fas fa-gift"></i> Mon Parrainage
+                </button>
+                <button class="btn btn-outline" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- 🚀 HERO SECTION ÉPIC -->
     <section class="hero">
-        <div class="container">
-            <h1>Investissez dans l'Agriculture Africaine</h1>
-            <p>Générez des revenus quotidiens en investissant dans des produits agricoles locaux. Rejoignez notre plateforme et bénéficiez de rendements attractifs.</p>
-            <button class="btn" onclick="showAuthModal('register')">Commencer à investir</button>
+        <div class="container hero-content">
+            <h1>Investissez dans l'Agriculture 4.0</h1>
+            <p>Générez des rendements quotidiens de 10% avec notre plateforme d'investissement agricole intelligente</p>
+            
+            <div class="hero-buttons">
+                <button class="btn btn-primary btn-large pulse" onclick="showAuthModal('register')" style="padding: 18px 40px; font-size: 1.2rem;">
+                    <i class="fas fa-rocket"></i> Démarrer Maintenant
+                </button>
+                <button class="btn btn-outline" onclick="showSection('products')" style="margin-left: 1rem; color: white; border-color: white;">
+                    Voir les Investissements
+                </button>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="number">10%</span>
+                    <span>Rendement Quotidien</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">28%</span>
+                    <span>Bonus Parrainage</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">100%</span>
+                    <span>Sécurisé</span>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- 📊 SECTION PRINCIPALE -->
     <main class="container">
-        <!-- Home Section -->
+        <!-- 🏠 SECTION ACCUEIL -->
         <section id="home" class="active-section">
-            <h2 class="section-title">Pourquoi investir avec AgriInvest ?</h2>
-            <div class="demo-note">
-                <p><strong>Plateforme de démonstration</strong> - Les produits s'affichent même sans connexion pour tester l'interface.</p>
+            <div class="section-title">
+                <h2>Pourquoi Choisir AgriInvest ?</h2>
+                <p>La plateforme d'investissement agricole la plus innovante d'Afrique</p>
             </div>
+
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card floating">
                     <i class="fas fa-chart-line"></i>
-                    <h3>Rendements Quotidiens</h3>
                     <div class="stat-value">10%</div>
-                    <p>Gagnez 10% de votre capital investi chaque jour</p>
+                    <h3>Rendement Quotidien</h3>
+                    <p>Gagnez chaque jour sur votre capital investi</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card floating" style="animation-delay: 0.2s;">
                     <i class="fas fa-gift"></i>
-                    <h3>Bonus de Bienvenue</h3>
                     <div class="stat-value">25%</div>
-                    <p>25% de bonus sur votre premier dépôt</p>
+                    <h3>Bonus de Bienvenue</h3>
+                    <p>Offert sur votre premier investissement</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card floating" style="animation-delay: 0.4s;">
                     <i class="fas fa-users"></i>
-                    <h3>Programme de Parrainage</h3>
                     <div class="stat-value">28%</div>
-                    <p>28% de bonus sur le premier dépôt de vos filleuls</p>
+                    <h3>Parrainage Actif</h3>
+                    <p>Gagnez sur les investissements de vos filleuls</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card floating" style="animation-delay: 0.6s;">
                     <i class="fas fa-shield-alt"></i>
-                    <h3>Sécurisé</h3>
                     <div class="stat-value">100%</div>
-                    <p>Vos investissements sont protégés et suivis</p>
+                    <h3>Sécurité Totale</h3>
+                    <p>Vos fonds sont protégés et assurés</p>
                 </div>
             </div>
         </section>
 
-        <!-- Products Section -->
+        <!-- 🌾 SECTION INVESTISSEMENTS -->
         <section id="products">
-            <h2 class="section-title">Nos Produits d'Investissement</h2>
+            <div class="section-title">
+                <h2>Nos Opportunités d'Investissement</h2>
+                <p>Choisissez parmi nos produits agricoles premium</p>
+            </div>
+
             <div class="products-grid" id="productsGrid">
                 <!-- Les produits seront chargés dynamiquement -->
             </div>
         </section>
 
-           <!-- Dashboard Section -->
+        <!-- 💰 SECTION TABLEAU DE BORD -->
         <section id="dashboard">
-            <div class="demo-note">
-                <p><strong>Connexion requise :</strong> Connectez-vous pour voir votre tableau de bord</p>
-                <button class="btn" onclick="showAuthModal('login')">Se connecter</button>
-            </div>
             <div id="dashboardContent" style="display: none;">
-                <h2 class="section-title">Tableau de Bord</h2>
+                <div class="section-title">
+                    <h2>Mon Tableau de Bord</h2>
+                    <p>Suivez vos performances en temps réel</p>
+                </div>
+
                 <div class="dashboard">
+                    <div class="dashboard-header">
+                        <h3>Vos Statistiques Financières</h3>
+                        <p>Mis à jour en temps réel</p>
+                    </div>
+
                     <div class="stats-grid">
                         <div class="stat-card">
                             <i class="fas fa-wallet"></i>
-                            <h3>Capital Total</h3>
                             <div class="stat-value" id="totalCapital">0 FCFA</div>
-                            <p>Montant total investi</p>
+                            <h3>Capital Total</h3>
                         </div>
                         <div class="stat-card">
                             <i class="fas fa-coins"></i>
-                            <h3>Revenus Quotidiens</h3>
                             <div class="stat-value" id="dailyEarnings">0 FCFA</div>
-                            <p>Gains calculés sur 24h</p>
+                            <h3>Gains Quotidiens</h3>
                         </div>
                         <div class="stat-card">
                             <i class="fas fa-gift"></i>
-                            <h3>Bonus Total</h3>
                             <div class="stat-value" id="totalBonus">0 FCFA</div>
-                            <p>Bonus de bienvenue et parrainage</p>
+                            <h3>Bonus Reçus</h3>
                         </div>
                         <div class="stat-card">
                             <i class="fas fa-hand-holding-usd"></i>
-                            <h3>Retraits</h3>
                             <div class="stat-value" id="totalWithdrawals">0 FCFA</div>
-                            <p>Montant total retiré</p>
+                            <h3>Retraits</h3>
                         </div>
-                    </div>
-
-                    <div>
-                        <h3>Historique des Transactions</h3>
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Montant</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody id="transactionHistory">
-                                <!-- L'historique sera chargé dynamiquement -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div style="margin-top: 2.5rem; text-align: center;">
-                        <button class="btn" onclick="showWithdrawalModal()">Demander un Retrait</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Referral Section -->
+        <!-- 🤝 SECTION PARRAINAGE -->
         <section id="referral">
-            <div class="demo-note">
-                <p><strong>Connexion requise :</strong> Connectez-vous pour accéder à votre lien de parrainage</p>
-                <button class="btn" onclick="showAuthModal('login')">Se connecter</button>
-            </div>
-            <div id="referralContent" style="display: none;">
-                <h2 class="section-title">Programme de Parrainage</h2>
-                <div class="dashboard">
-                    <div class="referral-section">
-                        <h3><i class="fas fa-link"></i> Votre lien de parrainage unique</h3>
-                        <p>Partagez ce lien pour inviter vos amis et gagnez <strong>28% de bonus</strong> sur leur premier investissement !</p>
-                        
-                     <div class="referral-link">
-    <input type="text" id="referralLinkInput" readonly>
-    <button class="btn btn-small" onclick="copyReferralLink()">Copier</button>
-</div>
+            <div id="referralContent">
+                <div class="section-title">
+                    <h2>Programme de Parrainage Élite</h2>
+                    <p>Gagnez 28% sur chaque filleul que vous parrainez</p>
+                </div>
 
-<!-- ✅ AJOUTEZ CETTE LIGNE - Affichage du code promo -->
-<div id="referralCodeDisplay"></div>
-                        
-                        <div class="referral-stats">
-                            <div class="referral-stat">
-                                <div class="number" id="referralCount">0</div>
-                                <div>Personnes parrainées</div>
-                            </div>
-                            <div class="referral-stat">
-                                <div class="number" id="referralEarnings">0 FCFA</div>
-                                <div>Gains de parrainage</div>
-                            </div>
-                            <div class="referral-stat">
-                                <div class="number" id="referralPotential">0 FCFA</div>
-                                <div>Potentiel de gains</div>
-                            </div>
-                        </div>
+                <div class="referral-section">
+                    <h3 style="text-align: center; margin-bottom: 1rem;">
+                        <i class="fas fa-crown"></i> Votre Lien de Parrainage Exclusif
+                    </h3>
+                    
+                    <div class="referral-link-container">
+                        <input type="text" id="referralLinkInput" class="referral-link-input" readonly>
+                        <button class="btn btn-primary" onclick="copyReferralLink()">
+                            <i class="fas fa-copy"></i> Copier
+                        </button>
                     </div>
 
-                    <div>
-                        <h3><i class="fas fa-users"></i> Vos filleuls</h3>
-                        <table class="history-table">
-                            <thead>
-                                <tr>
-                                    <th>Email</th>
-                                    <th>Date d'inscription</th>
-                                    <th>Investissement initial</th>
-                                    <th>Votre bonus</th>
-                                </tr>
-                            </thead>
-                            <tbody id="referralsList">
-                                <!-- La liste des filleuls sera chargée dynamiquement -->
-                            </tbody>
-                        </table>
+                    <div class="referral-code-display">
+                        <h4>Votre Code Promo Personnel</h4>
+                        <div class="referral-code-value" id="referralCodeValue">AGRI2024</div>
+                        <p>Donnez ce code à vos amis pour qu'ils l'utilisent à l'inscription</p>
+                    </div>
+
+                    <div class="referral-stats">
+                        <div class="referral-stat">
+                            <div class="number" id="referralCount">0</div>
+                            <div>Filleuls Actifs</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="number" id="referralEarnings">0 FCFA</div>
+                            <div>Gains de Parrainage</div>
+                        </div>
+                        <div class="referral-stat">
+                            <div class="number" id="referralPotential">0 FCFA</div>
+                            <div>Potentiel de Gains</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-content">
-            <div class="logo">
-                <i class="fas fa-seedling"></i>
-                <span>AgriInvest</span>
-            </div>
-            <div class="footer-links">
-                <a href="#">À propos</a>
-                <a href="#">Contact</a>
-                <a href="#">Conditions d'utilisation</a>
-                <a href="#">Politique de confidentialité</a>
-                <a href="#">FAQ</a>
-            </div>
-            <div class="copyright">
-                &copy; 2023 AgriInvest. Tous droits réservés. | Développé avec <i class="fas fa-heart" style="color: #e74c3c;"></i> pour l'agriculture africaine
-            </div>
-        </div>
-    </footer>
-
-    <!-- Authentication Modal -->
+    <!-- 🎯 MODALS -->
     <div id="authModal" class="modal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeAuthModal()">×</button>
             <h2 id="authModalTitle">Connexion</h2>
             <div id="authAlert"></div>
             <form id="authForm">
                 <div class="form-group" id="referralGroup" style="display: none;">
-                    <label for="referralCode"><i class="fas fa-user-plus"></i> Code de parrainage (optionnel)</label>
-                    <input type="text" id="referralCode" placeholder="Entrez le code de parrainage">
+                    <label><i class="fas fa-user-plus"></i> Code de Parrainage (Optionnel)</label>
+                    <input type="text" id="referralCode" class="form-control" placeholder="Entrez le code de votre parrain">
                 </div>
                 <div class="form-group">
-                    <label for="email"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="email" required>
+                    <label><i class="fas fa-envelope"></i> Adresse Email</label>
+                    <input type="email" id="email" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label for="password"><i class="fas fa-lock"></i> Mot de passe</label>
-                    <input type="password" id="password" required>
+                    <label><i class="fas fa-lock"></i> Mot de Passe</label>
+                    <input type="password" id="password" class="form-control" required>
                 </div>
                 <div class="modal-buttons">
-                    <button type="button" class="btn btn-cancel" onclick="closeAuthModal()">Annuler</button>
+                    <button type="button" class="btn btn-outline" onclick="closeAuthModal()">Annuler</button>
                     <button type="submit" class="btn btn-primary" id="authSubmit">Connexion</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Investment Modal -->
-    <div id="investmentModal" class="modal">
-        <div class="modal-content">
-            <h2>Investir dans <span id="investmentProductName"></span></h2>
-            <div id="investmentAlert"></div>
-            <form id="investmentForm">
-                <div class="form-group">
-                    <label for="investmentAmount"><i class="fas fa-money-bill-wave"></i> Montant à investir (FCFA)</label>
-                    <input type="number" id="investmentAmount" min="100" required>
-                    <div class="progress-bar">
-                        <div class="progress" id="investmentProgress"></div>
-                    </div>
-                    <small>Montant minimum: 100 FCFA</small>
-                </div>
-                <div class="form-group">
-                    <label for="phoneNumber"><i class="fas fa-mobile-alt"></i> Numéro de téléphone (pour paiement)</label>
-                    <input type="tel" id="phoneNumber" placeholder="Ex: 2376XXXXXXX" required>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn btn-cancel" onclick="closeInvestmentModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary" id="investmentSubmit">
-                        <i class="fas fa-lock"></i> Payer et Investir
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Withdrawal Modal -->
-    <div id="withdrawalModal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-wallet"></i> Demande de Retrait</h2>
-            <div id="withdrawalAlert"></div>
-            <form id="withdrawalForm">
-                <div class="form-group">
-                    <label for="withdrawalAmount">Montant à retirer (FCFA)</label>
-                    <input type="number" id="withdrawalAmount" min="500" required>
-                    <small>Le montant minimum de retrait est de 500 FCFA</small>
-                </div>
-                <div class="form-group">
-                    <label for="withdrawalPhone">Numéro de compte mobile</label>
-                    <input type="tel" id="withdrawalPhone" placeholder="Ex: 2376XXXXXXX" required>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn btn-cancel" onclick="closeWithdrawalModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Soumettre la demande</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <script>
         // Configuration Firebase
