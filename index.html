@@ -1,591 +1,158 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriInvest 🌱 | Investissement Agricole Intelligent</title>
-    <meta name="description" content="Investissez dans l'agriculture africaine avec des rendements quotidiens de 10%. Programme de parrainage premium avec bonus attractifs.">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <title>AgriInvest - Investissement Agricole</title>
     <style>
-        :root {
-            --primary: #00C853;
-            --primary-dark: #009624;
-            --primary-light: #5EFC82;
-            --secondary: #FF6D00;
-            --secondary-dark: #E65100;
-            --accent: #2962FF;
-            --dark: #1A237E;
-            --light: #F5F9FF;
-            --gray: #78909C;
-            --success: #00E676;
-            --warning: #FF9100;
-            --danger: #FF1744;
-            --shadow: 0 10px 30px rgba(0, 200, 83, 0.15);
-            --shadow-hover: 0 20px 50px rgba(0, 200, 83, 0.25);
-            --radius: 16px;
-            --gradient: linear-gradient(135deg, #00C853 0%, #2962FF 100%);
-            --gradient-secondary: linear-gradient(135deg, #FF6D00 0%, #FFAB00 100%);
-        }
-
+        /* RESET COMPLET */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #F5F9FF 0%, #E3F2FD 100%);
-            color: var(--dark);
-            line-height: 1.7;
-            min-height: 100vh;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.4;
+            padding: 0;
+            margin: 0;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* 🌟 HEADER PREMIUM */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 200, 83, 0.1);
-            padding: 1.2rem 0;
+        /* HEADER MOBILE FIRST */
+        .header {
+            background: #2e7d32;
+            color: white;
+            padding: 15px;
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: var(--shadow);
-            padding: 1rem 0;
+            border-bottom: 3px solid #1b5e20;
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 100%;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 2rem;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 18px;
+            font-weight: bold;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav ul li a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        nav ul li a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient);
-            transition: left 0.3s ease;
-            z-index: -1;
-            border-radius: 50px;
-        }
-
-        nav ul li a:hover::before,
-        nav ul li a.active::before {
-            left: 0;
-        }
-
-        nav ul li a:hover,
-        nav ul li a.active {
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 12px 30px;
+        /* MENU BURGER SIMPLE */
+        .menu-btn {
+            background: none;
             border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
+            color: white;
+            font-size: 24px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            font-size: 1rem;
+            padding: 5px;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-            box-shadow: var(--shadow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .btn-secondary {
-            background: var(--gradient-secondary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 109, 0, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        /* 🚀 HERO SECTION ÉPIC */
-        .hero {
-            background: linear-gradient(135deg, rgba(0, 200, 83, 0.9) 0%, rgba(41, 98, 255, 0.9) 100%), 
-                        url('https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: white;
-            padding: 180px 0 120px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,0 1000,50 1000,100 0,100"/></svg>');
-            background-size: cover;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.1;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .hero p {
-            font-size: 1.4rem;
-            margin-bottom: 3rem;
-            opacity: 0.95;
-            font-weight: 300;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 4rem;
-            flex-wrap: wrap;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-        .hero-stat .number {
-            font-size: 3rem;
-            font-weight: 800;
-            display: block;
-            background: linear-gradient(45deg, #FFD600, #FF6D00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* 📊 SECTIONS PREMIUM */
-        section {
-            padding: 100px 0;
+        /* NAVIGATION MOBILE */
+        .nav-menu {
             display: none;
-        }
-
-        .active-section {
-            display: block;
-            animation: slideUp 0.8s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(50px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 3.2rem;
-            font-weight: 800;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 80px;
-            height: 4px;
-            background: var(--gradient);
-            display: block;
-            margin: 0 auto;
-            border-radius: 2px;
-        }
-
-        /* 🌾 PRODUITS PREMIUM */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 2.5rem;
-            margin-top: 3rem;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.4s ease;
-            position: relative;
-            border: 1px solid rgba(0, 200, 83, 0.1);
-        }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
+            position: fixed;
+            top: 60px;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient);
+            width: 100%;
+            background: #2e7d32;
+            padding: 20px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
         }
 
-        .product-card:hover {
-            transform: translateY(-15px);
-            box-shadow: var(--shadow-hover);
+        .nav-menu.active {
+            display: block;
         }
 
-        .product-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--gradient-secondary);
+        .nav-menu a {
+            display: block;
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 2;
+            text-decoration: none;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 16px;
         }
 
-        .product-image {
-            height: 220px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .product-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .product-card:hover .product-overlay {
-            opacity: 1;
-        }
-
-        .product-info {
-            padding: 2rem;
-        }
-
-        .product-info h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .product-features {
-            list-style: none;
-            margin-bottom: 2rem;
-        }
-
-        .product-features li {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .product-features li:last-child {
+        .nav-menu a:last-child {
             border-bottom: none;
         }
 
-        .product-features li i {
-            color: var(--primary);
-            font-size: 1.1rem;
+        /* CONTENU PRINCIPAL */
+        .main-content {
+            margin-top: 60px;
+            padding: 20px;
+            min-height: calc(100vh - 120px);
         }
 
-        /* 💰 DASHBOARD ULTRA MODERNE */
-        .dashboard {
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 3rem;
+        .section {
+            display: none;
+            padding: 20px 0;
         }
 
-        .dashboard-header {
-            background: var(--gradient);
-            color: white;
-            padding: 2.5rem;
-            text-align: center;
-        }
-
-        .dashboard-header h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 3rem;
-        }
-
-        .stat-card {
-            background: var(--light);
-            padding: 2.5rem 2rem;
-            border-radius: var(--radius);
-            text-align: center;
-            border-left: 4px solid var(--primary);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-card i {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin: 1rem 0;
-        }
-
-        /* 🤝 SECTION PARRAINAGE ELITE */
-        .referral-section {
-            background: linear-gradient(135deg, #E8F5E9 0%, #E1F5FE 100%);
-            padding: 3rem;
-            border-radius: var(--radius);
-            margin: 3rem 0;
-            border: 2px dashed var(--primary);
-            position: relative;
-        }
-
-        .referral-section::before {
-            content: '🌟';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--gradient);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-        }
-
-        .referral-link-container {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .referral-link-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid var(--primary);
-            border-radius: var(--radius);
-            font-size: 1.1rem;
-            background: white;
-        }
-
-        .referral-code-display {
-            background: var(--gradient);
-            color: white;
-            padding: 2rem;
-            border-radius: var(--radius);
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .referral-code-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: 3px;
-            margin: 1rem 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .referral-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .referral-stat {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        .referral-stat .number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--primary);
+        .section.active {
             display: block;
         }
 
-        /* 🎯 MODALS ULTRA MODERNES */
+        /* CARTES SIMPLES */
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #2e7d32;
+            color: white;
+        }
+
+        /* FORMULAIRES MOBILE */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* MODAL MOBILE */
         .modal {
             display: none;
             position: fixed;
@@ -593,1185 +160,355 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5);
             z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.3s ease;
+            padding: 20px;
         }
 
         .modal-content {
             background: white;
-            padding: 3rem;
-            border-radius: var(--radius);
-            width: 90%;
-            max-width: 500px;
-            box-shadow: var(--shadow-hover);
-            animation: modalSlide 0.4s ease-out;
-            position: relative;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin-top: 20%;
         }
 
-        @keyframes modalSlide {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        .form-group {
-            margin-bottom: 2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-control {
+        /* FOOTER FIXE */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #E0E0E0;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1);
-            outline: none;
+        /* ÉTATS UTILISATEUR */
+        .user-section {
+            display: none;
         }
 
-        /* 📱 RESPONSIVE DESIGN */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav ul {
-                gap: 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-                padding: 2rem;
-            }
-
-            .referral-link-container {
-                flex-direction: column;
-            }
+        .guest-section {
+            display: block;
         }
 
-        /* ✨ ANIMATIONS SUPPLEMENTAIRES */
-        .pulse {
-            animation: pulse 2s infinite;
+        .user-logged-in .user-section {
+            display: block;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .user-logged-in .guest-section {
+            display: none;
         }
 
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
+        /* RESPONSIVE DESKTOP */
+        @media (min-width: 768px) {
+            .menu-btn {
+                display: none;
+            }
 
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            .nav-menu {
+                display: flex;
+                position: static;
+                background: none;
+                box-shadow: none;
+                padding: 0;
+                width: auto;
+            }
+
+            .nav-menu a {
+                border: none;
+                padding: 10px 15px;
+            }
+
+            .main-content {
+                max-width: 1200px;
+                margin: 80px auto 0;
+            }
+
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 🌟 HEADER ÉLITE -->
-    <header id="mainHeader">
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-seedling logo-icon"></i>
-                <span>AgriInvest</span>
-            </div>
-            
-            <nav>
-                <ul>
-                    <li><a onclick="showSection('home')" class="active">Accueil</a></li>
-                    <li><a onclick="showSection('products')">Investissements</a></li>
-                    <li><a onclick="showSection('dashboard')">Tableau de Bord</a></li>
-                    <li><a onclick="showSection('referral')">Parrainage</a></li>
-                </ul>
+    <!-- HEADER SIMPLE -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">🌱 AgriInvest</div>
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <nav class="nav-menu" id="navMenu">
+                <a href="#" onclick="showSection('accueil')">Accueil</a>
+                <a href="#" onclick="showSection('investir')">Investir</a>
+                <a href="#" onclick="showSection('tableau-de-bord')">Tableau de Bord</a>
+                <a href="#" onclick="showSection('parrainage')">Parrainage</a>
+                
+                <!-- SECTION VISITEUR -->
+                <div class="guest-section">
+                    <a href="#" onclick="showLogin()" class="btn" style="background: #ff9800; color: white; margin: 10px 0;">Connexion</a>
+                    <a href="#" onclick="showRegister()" class="btn" style="background: #2e7d32; color: white;">Inscription</a>
+                </div>
+                
+                <!-- SECTION UTILISATEUR CONNECTÉ -->
+                <div class="user-section">
+                    <a href="#" onclick="showSection('parrainage')">Mon Lien Parrainage</a>
+                    <a href="#" onclick="logout()" style="color: #ff9800; font-weight: bold;">Déconnexion</a>
+                </div>
             </nav>
-            
-            <div class="auth-buttons" id="authButtons">
-                <button class="btn btn-outline" onclick="showAuthModal('login')">Connexion</button>
-                <button class="btn btn-primary" onclick="showAuthModal('register')">Inscription</button>
-            </div>
-            
-            <div class="user-info" id="userInfo" style="display: none;">
-                <div class="user-avatar" id="userAvatar">U</div>
-                <span id="userEmail"></span>
-                <button class="btn btn-secondary" onclick="showSection('referral')">
-                    <i class="fas fa-gift"></i> Mon Parrainage
-                </button>
-                <button class="btn btn-outline" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
         </div>
-    </header>
+    </div>
 
-    <!-- 🚀 HERO SECTION ÉPIC -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Investissez dans l'Agriculture 4.0</h1>
-            <p>Générez des rendements quotidiens de 10% avec notre plateforme d'investissement agricole intelligente</p>
+    <!-- CONTENU PRINCIPAL -->
+    <div class="main-content">
+        <!-- SECTION ACCUEIL -->
+        <section id="accueil" class="section active">
+            <div class="card">
+                <h2>Investissez dans l'Agriculture</h2>
+                <p>Rendements quotidiens de 10%</p>
+                <button class="btn btn-primary" onclick="showRegister()">Commencer</button>
+            </div>
+
+            <div class="card">
+                <h3>Pourquoi AgriInvest ?</h3>
+                <p>• 10% rendement quotidien</p>
+                <p>• 28% bonus parrainage</p>
+                <p>• Retraits rapides</p>
+            </div>
+        </section>
+
+        <!-- SECTION INVESTIR -->
+        <section id="investir" class="section">
+            <div class="card">
+                <h2>Nos Produits</h2>
+            </div>
             
-            <div class="hero-buttons">
-                <button class="btn btn-primary btn-large pulse" onclick="showAuthModal('register')" style="padding: 18px 40px; font-size: 1.2rem;">
-                    <i class="fas fa-rocket"></i> Démarrer Maintenant
-                </button>
-                <button class="btn btn-outline" onclick="showSection('products')" style="margin-left: 1rem; color: white; border-color: white;">
-                    Voir les Investissements
-                </button>
-            </div>
-            
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="number">10%</span>
-                    <span>Rendement Quotidien</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="number">28%</span>
-                    <span>Bonus Parrainage</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="number">100%</span>
-                    <span>Sécurisé</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 📊 SECTION PRINCIPALE -->
-    <main class="container">
-        <!-- 🏠 SECTION ACCUEIL -->
-        <section id="home" class="active-section">
-            <div class="section-title">
-                <h2>Pourquoi Choisir AgriInvest ?</h2>
-                <p>La plateforme d'investissement agricole la plus innovante d'Afrique</p>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card floating">
-                    <i class="fas fa-chart-line"></i>
-                    <div class="stat-value">10%</div>
-                    <h3>Rendement Quotidien</h3>
-                    <p>Gagnez chaque jour sur votre capital investi</p>
-                </div>
-                <div class="stat-card floating" style="animation-delay: 0.2s;">
-                    <i class="fas fa-gift"></i>
-                    <div class="stat-value">25%</div>
-                    <h3>Bonus de Bienvenue</h3>
-                    <p>Offert sur votre premier investissement</p>
-                </div>
-                <div class="stat-card floating" style="animation-delay: 0.4s;">
-                    <i class="fas fa-users"></i>
-                    <div class="stat-value">28%</div>
-                    <h3>Parrainage Actif</h3>
-                    <p>Gagnez sur les investissements de vos filleuls</p>
-                </div>
-                <div class="stat-card floating" style="animation-delay: 0.6s;">
-                    <i class="fas fa-shield-alt"></i>
-                    <div class="stat-value">100%</div>
-                    <h3>Sécurité Totale</h3>
-                    <p>Vos fonds sont protégés et assurés</p>
-                </div>
+            <div id="produits-list">
+                <!-- Produits chargés ici -->
             </div>
         </section>
 
-        <!-- 🌾 SECTION INVESTISSEMENTS -->
-        <section id="products">
-            <div class="section-title">
-                <h2>Nos Opportunités d'Investissement</h2>
-                <p>Choisissez parmi nos produits agricoles premium</p>
-            </div>
-
-            <div class="products-grid" id="productsGrid">
-                <!-- Les produits seront chargés dynamiquement -->
+        <!-- SECTION TABLEAU DE BORD -->
+        <section id="tableau-de-bord" class="section">
+            <div class="card">
+                <h2>Mon Tableau de Bord</h2>
+                <p>Connectez-vous pour voir vos statistiques</p>
+                <button class="btn btn-primary" onclick="showLogin()">Se connecter</button>
             </div>
         </section>
 
-        <!-- 💰 SECTION TABLEAU DE BORD -->
-        <section id="dashboard">
-            <div id="dashboardContent" style="display: none;">
-                <div class="section-title">
-                    <h2>Mon Tableau de Bord</h2>
-                    <p>Suivez vos performances en temps réel</p>
-                </div>
-
-                <div class="dashboard">
-                    <div class="dashboard-header">
-                        <h3>Vos Statistiques Financières</h3>
-                        <p>Mis à jour en temps réel</p>
+        <!-- SECTION PARRAINAGE -->
+        <section id="parrainage" class="section">
+            <div class="card">
+                <h2>Programme de Parrainage</h2>
+                <p>Gagnez 28% sur chaque filleul</p>
+                
+                <div class="user-section">
+                    <div class="form-group">
+                        <label>Votre lien de parrainage :</label>
+                        <input type="text" class="form-control" id="lienParrainage" value="https://agriinvest.com?ref=CODE123" readonly>
                     </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <i class="fas fa-wallet"></i>
-                            <div class="stat-value" id="totalCapital">0 FCFA</div>
-                            <h3>Capital Total</h3>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-coins"></i>
-                            <div class="stat-value" id="dailyEarnings">0 FCFA</div>
-                            <h3>Gains Quotidiens</h3>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-gift"></i>
-                            <div class="stat-value" id="totalBonus">0 FCFA</div>
-                            <h3>Bonus Reçus</h3>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-hand-holding-usd"></i>
-                            <div class="stat-value" id="totalWithdrawals">0 FCFA</div>
-                            <h3>Retraits</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 🤝 SECTION PARRAINAGE -->
-        <section id="referral">
-            <div id="referralContent">
-                <div class="section-title">
-                    <h2>Programme de Parrainage Élite</h2>
-                    <p>Gagnez 28% sur chaque filleul que vous parrainez</p>
-                </div>
-
-                <div class="referral-section">
-                    <h3 style="text-align: center; margin-bottom: 1rem;">
-                        <i class="fas fa-crown"></i> Votre Lien de Parrainage Exclusif
-                    </h3>
+                    <button class="btn btn-secondary" onclick="copierLien()">Copier le lien</button>
                     
-                    <div class="referral-link-container">
-                        <input type="text" id="referralLinkInput" class="referral-link-input" readonly>
-                        <button class="btn btn-primary" onclick="copyReferralLink()">
-                            <i class="fas fa-copy"></i> Copier
-                        </button>
+                    <div style="margin-top: 15px; padding: 15px; background: #e8f5e9; border-radius: 8px;">
+                        <strong>Votre code promo :</strong>
+                        <span id="codeParrainage" style="font-weight: bold; color: #2e7d32;">CODE123</span>
                     </div>
+                </div>
 
-                    <div class="referral-code-display">
-                        <h4>Votre Code Promo Personnel</h4>
-                        <div class="referral-code-value" id="referralCodeValue">AGRI2024</div>
-                        <p>Donnez ce code à vos amis pour qu'ils l'utilisent à l'inscription</p>
-                    </div>
-
-                    <div class="referral-stats">
-                        <div class="referral-stat">
-                            <div class="number" id="referralCount">0</div>
-                            <div>Filleuls Actifs</div>
-                        </div>
-                        <div class="referral-stat">
-                            <div class="number" id="referralEarnings">0 FCFA</div>
-                            <div>Gains de Parrainage</div>
-                        </div>
-                        <div class="referral-stat">
-                            <div class="number" id="referralPotential">0 FCFA</div>
-                            <div>Potentiel de Gains</div>
-                        </div>
-                    </div>
+                <div class="guest-section">
+                    <p>Connectez-vous pour accéder à votre lien de parrainage</p>
+                    <button class="btn btn-primary" onclick="showLogin()">Se connecter</button>
                 </div>
             </div>
         </section>
-    </main>
+    </div>
 
-    <!-- 🎯 MODALS -->
-    <div id="authModal" class="modal">
+    <!-- MODAL CONNEXION -->
+    <div id="modalLogin" class="modal">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeAuthModal()">×</button>
-            <h2 id="authModalTitle">Connexion</h2>
-            <div id="authAlert"></div>
-            <form id="authForm">
-                <div class="form-group" id="referralGroup" style="display: none;">
-                    <label><i class="fas fa-user-plus"></i> Code de Parrainage (Optionnel)</label>
-                    <input type="text" id="referralCode" class="form-control" placeholder="Entrez le code de votre parrain">
+            <h2>Connexion</h2>
+            <form onsubmit="event.preventDefault(); connecterUtilisateur()">
+                <div class="form-group">
+                    <label>Email :</label>
+                    <input type="email" class="form-control" id="loginEmail" required>
                 </div>
                 <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Adresse Email</label>
-                    <input type="email" id="email" class="form-control" required>
+                    <label>Mot de passe :</label>
+                    <input type="password" class="form-control" id="loginPassword" required>
                 </div>
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Mot de Passe</label>
-                    <input type="password" id="password" class="form-control" required>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn btn-outline" onclick="closeAuthModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary" id="authSubmit">Connexion</button>
-                </div>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
+                <button type="button" class="btn" onclick="fermerModals()" style="background: #ccc; margin-top: 10px;">Annuler</button>
             </form>
         </div>
     </div>
 
+    <!-- MODAL INSCRIPTION -->
+    <div id="modalRegister" class="modal">
+        <div class="modal-content">
+            <h2>Inscription</h2>
+            <form onsubmit="event.preventDefault(); inscrireUtilisateur()">
+                <div class="form-group">
+                    <label>Code parrain (optionnel) :</label>
+                    <input type="text" class="form-control" id="codeParrain">
+                </div>
+                <div class="form-group">
+                    <label>Email :</label>
+                    <input type="email" class="form-control" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe :</label>
+                    <input type="password" class="form-control" id="registerPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">S'inscrire</button>
+                <button type="button" class="btn" onclick="fermerModals()" style="background: #ccc; margin-top: 10px;">Annuler</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER SIMPLE -->
+    <div class="footer">
+        <p>AgriInvest &copy; 2024 - Tous droits réservés</p>
+    </div>
 
     <script>
-        // Configuration Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyB7p0HYUDyEVE79wkdZ4VSP7Okyf9djsNI",
-            authDomain: "xlab-dbe8d.firebaseapp.com",
-            projectId: "xlab-dbe8d",
-            storageBucket: "xlab-dbe8d.firebasestorage.app",
-            messagingSenderId: "1029412345967",
-            appId: "1:1029412345967:web:fceb97686ee8885ca9959a"
-        };
+        // ÉTAT DE L'APPLICATION
+        let utilisateurConnecte = false;
 
-        // Initialisation Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        // FONCTIONS DE NAVIGATION
+        function toggleMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+        }
 
-        // Variables globales
-        let currentUser = null;
-        let userData = null;
-        let selectedProduct = null;
-        let userReferralCode = null;
-
-        // Configuration API de paiement (simulée pour la démo)
-        const MTN_API_KEY = "VOTRE_CLE_API_MTN_ICI";
-
-        // Votre domaine réel
-        const APP_DOMAIN = "https://agri-invest-tau.vercel.app";
-
-        // Éléments DOM
-        const authButtons = document.getElementById('authButtons');
-        const userInfo = document.getElementById('userInfo');
-        const userEmail = document.getElementById('userEmail');
-        const productsGrid = document.getElementById('productsGrid');
-        const dashboardContent = document.getElementById('dashboardContent');
-        const referralContent = document.getElementById('referralContent');
-        const totalCapital = document.getElementById('totalCapital');
-        const dailyEarnings = document.getElementById('dailyEarnings');
-        const totalBonus = document.getElementById('totalBonus');
-        const totalWithdrawals = document.getElementById('totalWithdrawals');
-        const transactionHistory = document.getElementById('transactionHistory');
-        const referralLinkInput = document.getElementById('referralLinkInput');
-        const referralCount = document.getElementById('referralCount');
-        const referralEarnings = document.getElementById('referralEarnings');
-        const referralsList = document.getElementById('referralsList');
-        const investmentProgress = document.getElementById('investmentProgress');
-
-        // Initialisation de l'application
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("🚀 Application AgriInvest initialisée");
-            
-            // Charger les produits immédiatement (même sans auth)
-            loadProducts();
-            
-            // Vérifier l'état d'authentification
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    console.log("✅ Utilisateur connecté:", user.email);
-                    currentUser = user;
-                    userEmail.textContent = user.email;
-                    authButtons.style.display = 'none';
-                    userInfo.style.display = 'flex';
-                    dashboardContent.style.display = 'block';
-                    referralContent.style.display = 'block';
-                    loadUserData();
-                    updateNavActive('dashboard');
-                } else {
-                    console.log("🔒 Aucun utilisateur connecté");
-                    currentUser = null;
-                    userData = null;
-                    userReferralCode = null;
-                    authButtons.style.display = 'flex';
-                    userInfo.style.display = 'none';
-                    dashboardContent.style.display = 'none';
-                    referralContent.style.display = 'none';
-                    updateNavActive('home');
-                }
-            });
-
-            // Configurer les formulaires
-            setupAuthForm();
-            setupInvestmentForm();
-            setupWithdrawalForm();
-
-            // Gérer les liens de parrainage au chargement de la page
-            handleReferralLinkOnLoad();
-            
-            // Afficher un message de bienvenue
-            setTimeout(() => {
-                if (!currentUser) {
-                    showAlert('home', '👋 Bienvenue sur AgriInvest! Inscrivez-vous pour commencer à investir.', 'success');
-                }
-            }, 1000);
-        });
-
-        // Fonctions d'affichage des sections
         function showSection(sectionId) {
-            console.log("📂 Changement de section:", sectionId);
-            
-            // Masquer toutes les sections
-            document.querySelectorAll('section').forEach(section => {
-                section.classList.remove('active-section');
+            // Cacher toutes les sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
             });
-
+            
             // Afficher la section demandée
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.classList.add('active-section');
-                
-                // Mettre à jour la navigation active
-                updateNavActive(sectionId);
-                
-                // Recharger les données si nécessaire
-                if (sectionId === 'products') {
-                    loadProducts();
-                } else if (sectionId === 'dashboard' && currentUser) {
-                    loadUserData();
-                } else if (sectionId === 'referral' && currentUser) {
-                    loadReferralData();
-                }
-            }
-        }
-
-        function updateNavActive(sectionId) {
-            // Retirer la classe active de tous les liens
-            document.querySelectorAll('nav a').forEach(link => {
-                link.classList.remove('active');
-            });
+            document.getElementById(sectionId).classList.add('active');
             
-            // Ajouter la classe active au lien correspondant
-            const activeLink = document.querySelector(`nav a[onclick="showSection('${sectionId}')"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
+            // Fermer le menu mobile
+            if (window.innerWidth < 768) {
+                toggleMenu();
             }
         }
 
-        // Fonctions d'authentification
-        function showAuthModal(type) {
-            const modal = document.getElementById('authModal');
-            const title = document.getElementById('authModalTitle');
-            const submitBtn = document.getElementById('authSubmit');
-            const referralGroup = document.getElementById('referralGroup');
-
-            if (type === 'login') {
-                title.textContent = '🔐 Connexion';
-                submitBtn.textContent = 'Se connecter';
-                referralGroup.style.display = 'none';
-            } else {
-                title.textContent = '📝 Inscription';
-                submitBtn.textContent = "S'inscrire";
-                referralGroup.style.display = 'block';
-                
-                // Pré-remplir le code de parrainage s'il existe dans l'URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const refCode = urlParams.get('ref');
-                if (refCode) {
-                    document.getElementById('referralCode').value = refCode;
-                }
-            }
-
-            modal.style.display = 'flex';
-            document.getElementById('authAlert').innerHTML = '';
+        // FONCTIONS AUTHENTIFICATION
+        function showLogin() {
+            document.getElementById('modalLogin').style.display = 'block';
+            fermerModals('modalRegister');
         }
 
-        function closeAuthModal() {
-            document.getElementById('authModal').style.display = 'none';
-            document.getElementById('authForm').reset();
+        function showRegister() {
+            document.getElementById('modalRegister').style.display = 'block';
+            fermerModals('modalLogin');
         }
 
-        function setupAuthForm() {
-            const authForm = document.getElementById('authForm');
-            
-            authForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const referralCode = document.getElementById('referralCode').value;
-                const isLogin = document.getElementById('authModalTitle').textContent === '🔐 Connexion';
-                const submitBtn = document.getElementById('authSubmit');
-                
-                // Afficher un indicateur de chargement
-                const originalText = submitBtn.textContent;
-                submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin: 0 auto;"></div>';
-                submitBtn.disabled = true;
-                
-                try {
-                    if (isLogin) {
-                        await auth.signInWithEmailAndPassword(email, password);
-                        showAlert('authAlert', '✅ Connexion réussie! Redirection...', 'success');
-                        setTimeout(() => {
-                            closeAuthModal();
-                            showSection('dashboard');
-                        }, 1500);
-                    } else {
-                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                        const user = userCredential.user;
-                        
-
-                        // Vérifier si le code de parrainage est valide
-                        let referredBy = null;
-                        if (referralCode) {
-                            const referrerQuery = await db.collection('users').where('referralCode', '==', referralCode).get();
-                            if (!referrerQuery.empty) {
-                                referredBy = referralCode;
-                                console.log("✅ Code de parrainage valide:", referralCode);
-                            } else {
-                                console.log("❌ Code de parrainage invalide:", referralCode);
-                            }
-                        }
-                        
-                        // Générer un code de parrainage unique pour le nouvel utilisateur
-                        const newReferralCode = generateReferralCode();
-                        userReferralCode = newReferralCode;
-                        
-                        // Créer le document utilisateur dans Firestore
-                        await db.collection('users').doc(user.uid).set({
-                            email: email,
-                            capital: 0,
-                            totalDeposits: 0,
-                            welcomeBonus: 0,
-                            referralBonus: 0,
-                            earnings: 0,
-                            totalWithdrawals: 0,
-                            referralCode: newReferralCode,
-                            referredBy: referredBy,
-                            referrals: [],
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        showAlert('authAlert', '✅ Inscription réussie! Bienvenue sur AgriInvest.', 'success');
-                        setTimeout(() => {
-                            closeAuthModal();
-                            showSection('dashboard');
-                        }, 1500);
-                    }
-                } catch (error) {
-                    console.error("❌ Erreur auth:", error);
-                    showAlert('authAlert', '❌ ' + error.message, 'error');
-                } finally {
-                    // Restaurer le bouton
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                }
+        function fermerModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
             });
+        }
+
+        function connecterUtilisateur() {
+            const email = document.getElementById('loginEmail').value;
+            if (email) {
+                utilisateurConnecte = true;
+                document.body.classList.add('user-logged-in');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                fermerModals();
+                showSection('tableau-de-bord');
+                alert('Connexion réussie !');
+            }
+        }
+
+        function inscrireUtilisateur() {
+            const email = document.getElementById('registerEmail').value;
+            const codeParrain = document.getElementById('codeParrain').value;
+            
+            if (email) {
+                utilisateurConnecte = true;
+                document.body.classList.add('user-logged-in');
+                
+                // Générer un code de parrainage unique
+                const codeUtilisateur = 'AGRI' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                document.getElementById('lienParrainage').value = `https://agriinvest.com?ref=${codeUtilisateur}`;
+                document.getElementById('codeParrainage').textContent = codeUtilisateur;
+                
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('codeParrain').value = '';
+                
+                fermerModals();
+                showSection('tableau-de-bord');
+                alert('Inscription réussie ! Votre code parrainage : ' + codeUtilisateur);
+            }
         }
 
         function logout() {
-            auth.signOut();
-            showSection('home');
-            showAlert('home', '👋 Vous avez été déconnecté avec succès.', 'success');
+            utilisateurConnecte = false;
+            document.body.classList.remove('user-logged-in');
+            showSection('accueil');
+            alert('Déconnexion réussie');
         }
 
-        // Fonctions de produits et investissements
-        function loadProducts() {
-            console.log("🌱 Chargement des produits");
-            
-            // Données des produits (10 produits agricoles)
-            const products = [
-                {
-                    id: 1,
-                    name: "Riz",
-                    price: 5000,
-                    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 10,
-                    description: "Investissez dans la culture du riz, aliment de base en Afrique",
-                    popularity: "Élevée"
-                },
-                {
-                    id: 2,
-                    name: "Anacarde",
-                    price: 8000,
-                    image: "https://images.unsplash.com/photo-1623341215095-6a4e61e8d6c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 8,
-                    description: "Noix de cajou, produit d'exportation très demandé",
-                    popularity: "Très élevée"
-                },
-                {
-                    id: 3,
-                    name: "Tomate",
-                    price: 3000,
-                    image: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 15,
-                    description: "Légume essentiel avec un marché local important",
-                    popularity: "Élevée"
-                },
-                {
-                    id: 4,
-                    name: "Maïs",
-                    price: 2000,
-                    image: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 20,
-                    description: "Aliment de base riche en énergie, très demandé localement",
-                    popularity: "Moyenne"
-                },
-                {
-                    id: 5,
-                    name: "Mangue",
-                    price: 10000,
-                    image: "https://images.unsplash.com/photo-1590502593741-8f15cfa7f0f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 12,
-                    description: "Fruit tropical sucré avec un excellent marché d'exportation",
-                    popularity: "Élevée"
-                },
-                {
-                    id: 6,
-                    name: "Café",
-                    price: 50000,
-                    image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 5,
-                    description: "Café, produit d'exportation très lucratif pour les investisseurs",
-                    popularity: "Très élevée"
-                },
-                {
-                    id: 7,
-                    name: "Piment",
-                    price: 1500,
-                    image: "https://images.unsplash.com/photo-1582515073490-d3cbf5c0c091?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 10,
-                    description: "Épice locale très demandée, utilisée dans de nombreux plats",
-                    popularity: "Moyenne"
-                },
-                {
-                    id: 8,
-                    name: "Palmier à huile",
-                    price: 100000,
-                    image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 3,
-                    description: "Investissez dans l'huile de palme, un produit d'exportation clé",
-                    popularity: "Élevée"
-                },
-                {
-                    id: 9,
-                    name: "Oignon",
-                    price: 2500,
-                    image: "https://images.unsplash.com/photo-1608131350973-8f6e28b2f2d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 20,
-                    description: "Légume de base dans la cuisine africaine, demande constante",
-                    popularity: "Moyenne"
-                },
-                {
-                    id: 10,
-                    name: "Banane plantain",
-                    price: 1000,
-                    image: "https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
-                    limit: 25,
-                    description: "Aliment de base énergétique, très demandé localement",
-                    popularity: "Élevée"
-                }
+        // FONCTION COPIER LIEN
+        function copierLien() {
+            const input = document.getElementById('lienParrainage');
+            input.select();
+            document.execCommand('copy');
+            alert('Lien copié dans le presse-papier !');
+        }
+
+        // CHARGEMENT DES PRODUITS
+        function chargerProduits() {
+            const produits = [
+                { nom: "Riz", prix: "5,000 FCFA", rendement: "10%/jour" },
+                { nom: "Maïs", prix: "3,000 FCFA", rendement: "10%/jour" },
+                { nom: "Café", prix: "15,000 FCFA", rendement: "10%/jour" },
+                { nom: "Cacao", prix: "8,000 FCFA", rendement: "10%/jour" }
             ];
 
-            // Afficher les produits
-            productsGrid.innerHTML = '';
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image" style="background-image: url('${product.image}')"></div>
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p>${product.description}</p>
-                        <div class="product-price">${product.price.toLocaleString()} FCFA</div>
-                        <div class="product-stats">
-                            <span><i class="fas fa-chart-line"></i> Popularité: ${product.popularity}</span>
-                            <span><i class="fas fa-lock"></i> Limite: ${product.limit}</span>
-                        </div>
-                        <button class="btn" onclick="openInvestmentModal(${product.id})">
-                            <i class="fas fa-seedling"></i> Investir
-                        </button>
-                    </div>
-                `;
-                productsGrid.appendChild(productCard);
-            });
+            const container = document.getElementById('produits-list');
+            container.innerHTML = produits.map(produit => `
+                <div class="card">
+                    <h3>${produit.nom}</h3>
+                    <p><strong>Prix:</strong> ${produit.prix}</p>
+                    <p><strong>Rendement:</strong> ${produit.rendement}</p>
+                    <button class="btn btn-primary" onclick="investir('${produit.nom}')">Investir</button>
+                </div>
+            `).join('');
         }
 
-        function openInvestmentModal(productId) {
-            if (!currentUser) {
-                showAuthModal('login');
+        function investir(nomProduit) {
+            if (!utilisateurConnecte) {
+                showLogin();
                 return;
             }
-
-            // Trouver le produit sélectionné
-            const products = [
-                { id: 1, name: "Riz", price: 5000 },
-                { id: 2, name: "Anacarde", price: 8000 },
-                { id: 3, name: "Tomate", price: 3000 },
-                { id: 4, name: "Maïs", price: 2000 },
-                { id: 5, name: "Mangue", price: 10000 },
-                { id: 6, name: "Café", price: 50000 },
-                { id: 7, name: "Piment", price: 1500 },
-                { id: 8, name: "Palmier à huile", price: 100000 },
-                { id: 9, name: "Oignon", price: 2500 },
-                { id: 10, name: "Banane plantain", price: 1000 }
-            ];
-            
-            selectedProduct = products.find(p => p.id === productId);
-            document.getElementById('investmentProductName').textContent = selectedProduct.name;
-            document.getElementById('investmentModal').style.display = 'flex';
-            document.getElementById('investmentAlert').innerHTML = '';
- // Réinitialiser la barre de progression
-            investmentProgress.style.width = '0%';
+            alert(`Investissement dans ${nomProduit} effectué !`);
         }
 
-        function closeInvestmentModal() {
-            document.getElementById('investmentModal').style.display = 'none';
-            document.getElementById('investmentForm').reset();
-            selectedProduct = null;
-        }
-
-        function setupInvestmentForm() {
-            const investmentForm = document.getElementById('investmentForm');
-            const investmentAmount = document.getElementById('investmentAmount');
+        // INITIALISATION
+        document.addEventListener('DOMContentLoaded', function() {
+            chargerProduits();
             
-            // Mettre à jour la barre de progression en temps réel
-            investmentAmount.addEventListener('input', function() {
-                const value = parseInt(this.value) || 0;
-                const max = 100000; // Maximum arbitraire pour la démo
-                const percentage = Math.min((value / max) * 100, 100);
-                investmentProgress.style.width = percentage + '%';
-            });
-            
-            investmentForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const amount = parseInt(investmentAmount.value);
-                const phone = document.getElementById('phoneNumber').value;
-                const submitBtn = document.getElementById('investmentSubmit');
-                
-                if (amount < 100) {
-                    showAlert('investmentAlert', '❌ Le montant minimum d\'investissement est de 100 FCFA', 'error');
-                    return;
-                }
-                
-                try {
-                    // Afficher un indicateur de chargement
-                    const originalText = submitBtn.textContent;
-                    submitBtn.innerHTML = '<div class="spinner" style="width: 20px; height: 20px; margin: 0 auto;"></div> Traitement...';
-                    submitBtn.disabled = true;
-                    
-                    // Simuler le paiement MTN
-                    showAlert('investmentAlert', '⏳ Traitement du paiement en cours...', 'success');
-                    
-                    const paymentSuccess = await processMTNPayment(phone, amount);
-                    
-                    if (paymentSuccess) {
-                        // Mettre à jour les données utilisateur
-                        const userRef = db.collection('users').doc(currentUser.uid);
-                        const userDoc = await userRef.get();
-                        const userData = userDoc.data();
-                        
-                        // Calculer le bonus de bienvenue (25% du premier dépôt)
-                        let welcomeBonus = 0;
-                        if (userData.totalDeposits === 0) {
-                            welcomeBonus = amount * 0.25;
-                        }
-                        
-                        // Mettre à jour le capital et les dépôts
-                        await userRef.update({
-                            capital: userData.capital + amount + welcomeBonus,
-                            totalDeposits: userData.totalDeposits + amount,
-                            welcomeBonus: userData.welcomeBonus + welcomeBonus,
-                            lastInvestment: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        // Ajouter l'investissement à l'historique
-                        await db.collection('investments').add({
-                            userId: currentUser.uid,
-                            product: selectedProduct.name,
-                            amount: amount,
-                            bonus: welcomeBonus,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
-                        // Gérer le bonus de parrainage si applicable
-                        if (userData.referredBy) {
-                            const referrerQuery = await db.collection('users').where('referralCode', '==', userData.referredBy).get();
-                            if (!referrerQuery.empty) {
-                                const referrerDoc = referrerQuery.docs[0];
-                                const referrerId = referrerDoc.id;
-                                const referralBonus = amount * 0.28;
-                                
-                                // Mettre à jour le parrain
-                                await db.collection('users').doc(referrerId).update({
-                                    referralBonus: firebase.firestore.FieldValue.increment(referralBonus),
-                                    capital: firebase.firestore.FieldValue.increment(referralBonus),
-                                    referrals: firebase.firestore.FieldValue.arrayUnion({
-                                        email: userData.email,
-                                        joinedAt: userData.createdAt,
-                                        firstInvestment: amount,
-                                        bonusEarned: referralBonus,
-                                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                                    })
-                                });
-                                
-                                // Ajouter une entrée pour le bonus de parrainage
-                                await db.collection('investments').add({
-                                    userId: referrerId,
-                                    type: 'referral',
-                                    amount: referralBonus,
-                                    referredUser: currentUser.uid,
-                                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                                });
-                            }
-                        }
-                        
-                        showAlert('investmentAlert', '✅ Investissement réussi! Votre capital a été mis à jour.', 'success');
-                        setTimeout(() => {
-                            closeInvestmentModal();
-                            loadUserData();
-                            if (userData.referredBy) {
-                                loadReferralData();
-                            }
-                        }, 2000);
-                    } else {
-                        showAlert('investmentAlert', '❌ Le paiement a échoué. Veuillez réessayer.', 'error');
-                    }
-                } catch (error) {
-                    showAlert('investmentAlert', '❌ Erreur: ' + error.message, 'error');
-                } finally {
-                    // Restaurer le bouton
-                    submitBtn.textContent = '<i class="fas fa-lock"></i> Payer et Investir';
-                    submitBtn.disabled = false;
+            // Fermer les modales en cliquant à l'extérieur
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    fermerModals();
                 }
             });
-        }
 
-        // Fonctions de retrait
-        function showWithdrawalModal() {
-            if (!currentUser) {
-                showAuthModal('login');
-                return;
-            }
-            
-            document.getElementById('withdrawalModal').style.display = 'flex';
-            document.getElementById('withdrawalAlert').innerHTML = '';
-        }
-
-        function closeWithdrawalModal() {
-            document.getElementById('withdrawalModal').style.display = 'none';
-            document.getElementById('withdrawalForm').reset();
-        }
-
-        function setupWithdrawalForm() {
-            const withdrawalForm = document.getElementById('withdrawalForm');
-            
-            withdrawalForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const amount = parseInt(document.getElementById('withdrawalAmount').value);
-                const phone = document.getElementById('withdrawalPhone').value;
-                
-                if (amount < 500) {
-                    showAlert('withdrawalAlert', '❌ Le montant minimum de retrait est de 500 FCFA', 'error');
-                    return;
-                }
-                
-                if (!userData || amount > userData.capital) {
-                    showAlert('withdrawalAlert', '❌ Fonds insuffisants pour ce retrait', 'error');
-                    return;
-                }
-                
-                try {
-                    // Ajouter la demande de retrait à Firestore
-                    await db.collection('withdrawals').add({
-                        userId: currentUser.uid,
-                        amount: amount,
-                        phone: phone,
-                        status: 'pending',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    
-                    // Mettre à jour le capital de l'utilisateur
-                    await db.collection('users').doc(currentUser.uid).update({
-                        capital: firebase.firestore.FieldValue.increment(-amount),
-                        totalWithdrawals: firebase.firestore.FieldValue.increment(amount)
-                    });
-                    
-                    showAlert('withdrawalAlert', '✅ Demande de retrait soumise avec succès!', 'success');
-                    setTimeout(() => {
-                        closeWithdrawalModal();
-                        loadUserData();
-                    }, 2000);
-                } catch (error) {
-                    showAlert('withdrawalAlert', '❌ Erreur: ' + error.message, 'error');
-                }
+            // Cacher le menu en scrollant
+            window.addEventListener('scroll', function() {
+                document.getElementById('navMenu').classList.remove('active');
             });
-        }
-
-        // Fonctions de parrainage
-        function loadReferralData() {
-            if (!currentUser) return;
-            
-            const userRef = db.collection('users').doc(currentUser.uid);
-            
-            userRef.onSnapshot((doc) => {
-                if (doc.exists) {
-                    const userData = doc.data();
-                    // AJOUTEZ CES LIGNES après referralLinkInput.value = referralLink;
-if (userData.referralCode) {
-    const referralLink = `${APP_DOMAIN}?ref=${userData.referralCode}`;
-    referralLinkInput.value = referralLink;
-    
-    // ✅ AJOUTEZ CES 2 LIGNES - Afficher le code promo en dessous
-    const referralCodeDisplay = document.getElementById('referralCodeDisplay');
-    if (referralCodeDisplay) {
-        referralCodeDisplay.innerHTML = `
-            <div style="margin-top: 10px; text-align: center; padding: 10px; background: #f0f8f0; border-radius: 5px;">
-                <strong>Votre code promo :</strong> 
-                <span style="font-size: 1.2em; color: #2e7d32; font-weight: bold;">${userData.referralCode}</span>
-            </div>
-        `;
-    }
-}
-                    
-                    // Mettre à jour les statistiques
-                    const referralCountValue = userData.referrals ? userData.referrals.length : 0;
-                    referralCount.textContent = referralCountValue;
-                    referralEarnings.textContent = (userData.referralBonus || 0).toLocaleString() + ' FCFA';
-                    
-                    // Calculer le potentiel de gains (28% de 10,000 FCFA par filleul)
-                    const potentialEarnings = referralCountValue * 2800; // 28% de 10,000
-                    document.getElementById('referralPotential').textContent = potentialEarnings.toLocaleString() + ' FCFA';
-                    
-                    // Charger la liste des filleuls
-                    loadReferralsList(userData.referrals || []);
-                }
-            });
-        }
-
-        function loadReferralsList(referrals) {
-            referralsList.innerHTML = '';
-            
-            if (referrals.length === 0) {
-                referralsList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Aucun filleul pour le moment. Partagez votre lien de parrainage!</td></tr>';
-            } else {
-                referrals.forEach(ref => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${ref.email}</td>
-                        <td>${ref.joinedAt ? ref.joinedAt.toDate().toLocaleDateString('fr-FR') : 'Date inconnue'}</td>
-                        <td>${ref.firstInvestment ? ref.firstInvestment.toLocaleString() + ' FCFA' : 'Aucun investissement'}</td>
-                        <td>${ref.bonusEarned ? ref.bonusEarned.toLocaleString() + ' FCFA' : '0 FCFA'}</td>
-                    `;
-                    referralsList.appendChild(row);
-                });
-            }
-        }
-
-        function copyReferralLink() {
-            if (referralLinkInput.value) {
-                referralLinkInput.select();
-                document.execCommand('copy');
-                
-                // Afficher une notification de succès
-                const originalButtonText = event.target.textContent;
-                event.target.textContent = '✅ Copié!';
-                event.target.style.backgroundColor = '#4caf50';
-                
-                // Afficher une alerte
-                showAlert('referralContent', '✅ Lien copié dans le presse-papier! Partagez-le avec vos amis.', 'success');
-                
-                setTimeout(() => {
-                    event.target.textContent = originalButtonText;
-                    event.target.style.backgroundColor = '';
-                }, 2000);
-            }
-        }
-
-        // Gérer les liens de parrainage au chargement de la page
-        function handleReferralLinkOnLoad() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const refCode = urlParams.get('ref');
-            if (refCode) {
-                // Stocker le code de parrainage pour l'inscription
-                localStorage.setItem('referralCode', refCode);
-                console.log('✅ Code de parrainage détecté:', refCode);
-                
-                // Afficher un message si l'utilisateur n'est pas connecté
-                if (!currentUser) {
-                    setTimeout(() => {
-                        showAlert('home', `🎁 Vous avez été invité par un parrain! Utilisez le code <strong>${refCode}</strong> lors de votre inscription.`, 'success');
-                    }, 1000);
-                }
-            }
-        }
-
-        // Fonctions utilitaires
-        function loadUserData() {
-            if (!currentUser) return;
-            
-            const userRef = db.collection('users').doc(currentUser.uid);
-            
-            userRef.onSnapshot((doc) => {
-                if (doc.exists) {
-                    userData = doc.data();
-                    userReferralCode = userData.referralCode;
-                    
-                    // Mettre à jour l'interface utilisateur
-                    totalCapital.textContent = (userData.capital || 0).toLocaleString() + ' FCFA';
-                    dailyEarnings.textContent = ((userData.capital || 0) * 0.1).toLocaleString() + ' FCFA';
-                    totalBonus.textContent = ((userData.welcomeBonus || 0) + (userData.referralBonus || 0)).toLocaleString() + ' FCFA';
-                    totalWithdrawals.textContent = (userData.totalWithdrawals || 0).toLocaleString() + ' FCFA';
-                    
-                    // Charger l'historique des transactions
-                    loadTransactionHistory();
-                    
-                    // Charger les données de parrainage
-                    loadReferralData();
-                }
-            }, (error) => {
-                console.error("❌ Erreur chargement user data:", error);
-            });
-        }
-
-        async function loadTransactionHistory() {
-            if (!currentUser) return;
-            
-            try {
-                // Récupérer les investissements
-                const investmentsQuery = await db.collection('investments')
-                    .where('userId', '==', currentUser.uid)
-                    .orderBy('timestamp', 'desc')
-                    .limit(10)
-                    .get();
-                
-                // Récupérer les retraits
-                const withdrawalsQuery = await db.collection('withdrawals')
-                    .where('userId', '==', currentUser.uid)
-                    .orderBy('timestamp', 'desc')
-                    .limit(10)
-                    .get();
-                
-                // Combiner et trier les transactions
-                let transactions = [];
-                
-                investmentsQuery.forEach(doc => {
-                    const data = doc.data();
-                    transactions.push({
-                        date: data.timestamp ? data.timestamp.toDate().toLocaleDateString('fr-FR') : 'Date inconnue',
-                        type: data.type === 'referral' ? 'Bonus parrainage' : 'Investissement',
-                        amount: data.amount + (data.bonus || 0),
-                        status: 'Complété'
-                    });
-                });
-                
-                withdrawalsQuery.forEach(doc => {
-                    const data = doc.data();
-                    transactions.push({
-                        date: data.timestamp ? data.timestamp.toDate().toLocaleDateString('fr-FR') : 'Date inconnue',
-                        type: 'Retrait',
-                        amount: -data.amount,
-                        status: data.status === 'pending' ? 'En attente' : 'Complété'
-                    });
-                });
-                
-                // Trier par date (plus récent en premier)
-                transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                // Afficher l'historique
-                transactionHistory.innerHTML = '';
-                if (transactions.length === 0) {
-                    transactionHistory.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Aucune transaction pour le moment. Faites votre premier investissement!</td></tr>';
-                } else {
-                    transactions.forEach(transaction => {
-                        const row = document.createElement('tr');
-                        const amountClass = transaction.amount > 0 ? 'positive' : 'negative';
-                        row.innerHTML = `
-                            <td>${transaction.date}</td>
-                            <td>${transaction.type}</td>
-                            <td class="${amountClass}">${transaction.amount > 0 ? '+' : ''}${transaction.amount.toLocaleString()} FCFA</td>
-                            <td>${transaction.status}</td>
-                        `;
-                        transactionHistory.appendChild(row);
-                    });
-                }
-            } catch (error) {
-                console.error("❌ Erreur chargement historique:", error);
-                transactionHistory.innerHTML = '<tr><td colspan="4" style="text-align: center;">Erreur de chargement des transactions</td></tr>';
-            }
-        }
-
-        function generateReferralCode() {
-            return Math.random().toString(36).substring(2, 10).toUpperCase();
-        }
-
-        function showAlert(elementId, message, type) {
-            const alertDiv = document.getElementById(elementId);
-            if (alertDiv) {
-                alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-                
-                // Supprimer l'alerte après 5 secondes
-                setTimeout(() => {
-                    alertDiv.innerHTML = '';
-                }, 5000);
-            }
-        }
-
-        // Simulation de l'API de paiement MTN
-        async function processMTNPayment(phone, amount) {
-            return new Promise((resolve) => {
-                // Simuler un traitement de paiement
-                setTimeout(() => {
-                    // Simuler un succès dans 90% des cas
-                    resolve(Math.random() < 0.9);
-                }, 3000);
-            });
-        }
-
-        // Gérer la fermeture des modales en cliquant à l'extérieur
-        window.onclick = function(event) {
-            const authModal = document.getElementById('authModal');
-            const investmentModal = document.getElementById('investmentModal');
-            const withdrawalModal = document.getElementById('withdrawalModal');
-            
-            if (event.target === authModal) {
-                closeAuthModal();
-            }
-            if (event.target === investmentModal) {
-                closeInvestmentModal();
-            }
-            if (event.target === withdrawalModal) {
-                closeWithdrawalModal();
-            }
-        }
-
-        // Empêcher le formulaire de se soumettre avec Entrée
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const activeModal = document.querySelector('.modal[style*="display: flex"]');
-                if (activeModal) {
-                    e.preventDefault();
-                }
-            }
         });
     </script>
 </body>
